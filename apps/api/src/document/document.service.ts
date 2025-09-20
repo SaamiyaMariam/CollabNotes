@@ -8,10 +8,12 @@ export class DocumentService {
     constructor(private prisma: PrismaService) {}
 
     async createDocument(userId: string, input: CreateDocumentInput) {
+        console.log("service logs");
+        console.log("input: ", input);
         return this.prisma.document.create({
             data: {
                 title: input.title ?? 'Untitled',
-                parentId: input.parentId,
+                parentId: input.parentId ?? null,
                 ownerId: userId,
             },
         });

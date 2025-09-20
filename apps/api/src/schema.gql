@@ -7,17 +7,43 @@ type AuthResponse {
   refreshToken: String!
 }
 
+input CreateDocumentInput {
+  parentId: String
+  title: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Document {
+  children: [Document!]
+  createdAt: DateTime!
+  id: ID!
+  owner: User
+  ownerId: String!
+  parentId: String
+  title: String!
+  updatedAt: DateTime!
+}
+
 input LoginInput {
   email: String!
   password: String!
 }
 
 type Mutation {
+  createDocument(data: CreateDocumentInput!): Document!
+  deleteDocument(id: String!): Document!
   login(data: LoginInput!): AuthResponse!
   signup(data: SignupInput!): AuthResponse!
+  updateDocument(data: UpdateDocumentInput!): Document!
 }
 
 type Query {
+  document(id: String!): Document!
+  documents: [Document!]!
   hello: String!
 }
 
@@ -25,4 +51,19 @@ input SignupInput {
   displayName: String!
   email: String!
   password: String!
+}
+
+input UpdateDocumentInput {
+  id: ID!
+  parentId: String
+  title: String
+}
+
+type User {
+  createdAt: DateTime!
+  displayName: String!
+  documents: [Document!]
+  email: String!
+  id: ID!
+  updatedAt: DateTime!
 }
