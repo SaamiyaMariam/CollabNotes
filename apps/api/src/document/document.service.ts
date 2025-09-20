@@ -25,7 +25,7 @@ export class DocumentService {
     }
 
     async findOne(userId: string, id: string) {
-        const doc = await this.prisma.document.findUnique({where: { id }});
+        const doc = await this.prisma.document.findFirst({where: { id }});
         if (!doc || doc.ownerId !== userId) {
             throw new NotFoundException('Document not found');
         }
@@ -33,7 +33,7 @@ export class DocumentService {
     }
 
     async updateDocument(userId: string, input: UpdateDocumentInput) {
-        const doc = await this.prisma.document.findUnique({where : { id: input.id } });
+        const doc = await this.prisma.document.findFirst({where : { id: input.id } });
         if(!doc || doc.ownerId !== userId){
             throw new ForbiddenException('Not allowed to update this document');
         }
