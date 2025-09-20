@@ -8,10 +8,12 @@ export class DocumentService {
     constructor(private prisma: PrismaService) {}
 
     async createDocument(userId: string, input: CreateDocumentInput) {
+        console.log("service logs");
+        console.log("input: ", input);
         return this.prisma.document.create({
             data: {
                 title: input.title ?? 'Untitled',
-                parentId: input.parentId,
+                parentId: input.parentId ?? null,
                 ownerId: userId,
             },
         });
@@ -25,7 +27,7 @@ export class DocumentService {
     }
 
     async findOne(userId: string, id: string) {
-        const doc = await this.prisma.document.findUnique({where: { id }});
+        const doc = await this.prisma.document.findFirst({where: { id }});
         if (!doc || doc.ownerId !== userId) {
             throw new NotFoundException('Document not found');
         }
@@ -33,7 +35,7 @@ export class DocumentService {
     }
 
     async updateDocument(userId: string, input: UpdateDocumentInput) {
-        const doc = await this.prisma.document.findUnique({where : { id: input.id } });
+        const doc = await this.prisma.document.findFirst({where : { id: input.id } });
         if(!doc || doc.ownerId !== userId){
             throw new ForbiddenException('Not allowed to update this document');
         }

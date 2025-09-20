@@ -9,6 +9,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { HealthController } from './health/health.controller';
 import { AuthModule } from './auth/auth.module';
 import { IncomingMessage } from 'http';
+import { DocumentModule } from './document/document.module';
 
 @Module({
   imports: [
@@ -18,9 +19,10 @@ import { IncomingMessage } from 'http';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
-      playground: true, // or Apollo Sandbox
+      playground: true,
       context: ({ req }: { req: IncomingMessage }) => ({ req }),
     }),
+    DocumentModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService, AppResolver],
