@@ -14,7 +14,6 @@ model User {
   displayName String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   refreshTokens RefreshToken[]
   documents Document[] @relation("UserDocuments")
 }
@@ -35,8 +34,8 @@ model Document {
   owner   User   @relation("UserDocuments", fields: [ownerId], references: [id])
 
   parentId String?
-  children Document[] @relation("DocToDoc")
-  parent   Document?  @relation("DocToDoc", fields: [parentId], references: [id])
+  children Document[] @relation("DocChildren")
+  parent   Document?  @relation("DocChildren", fields: [parentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
