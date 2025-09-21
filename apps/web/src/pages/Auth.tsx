@@ -34,8 +34,6 @@ export default function Auth() {
       </div>
 
       {/* Flipping Card */}
-      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-tr from-pinkPurple to-bluePastel overflow-hidden"
-         style={{ perspective: "1500px" }}>
       <motion.div
         className="relative w-[900px] h-[520px]"
         style={{ transformStyle: "preserve-3d" }}
@@ -58,7 +56,6 @@ export default function Auth() {
           <Signup onSwitch={() => setIsLogin(true)} />
         </div>
       </motion.div>
-    </div>
     </div>
   );
 }
