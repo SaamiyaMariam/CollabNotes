@@ -1,10 +1,15 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Auth from "./pages/Auth";
+import Dashboard from "./pages/Dashboard";
+
 export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600">
-        CollabNotes 🚀
-      </h1>
-      <p className="prose">Tailwind v3 is working!</p>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/auth" replace />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/app" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
