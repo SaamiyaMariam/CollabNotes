@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.perspective {
+  perspective: 1200px;
+}
