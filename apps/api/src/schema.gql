@@ -45,6 +45,7 @@ type Query {
   document(id: String!): Document!
   documents: [Document!]!
   hello: String!
+  me: User
 }
 
 input SignupInput {

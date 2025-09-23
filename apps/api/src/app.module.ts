@@ -10,6 +10,7 @@ import { HealthController } from './health/health.controller';
 import { AuthModule } from './auth/auth.module';
 import { IncomingMessage } from 'http';
 import { DocumentModule } from './document/document.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { DocumentModule } from './document/document.module';
       context: ({ req }: { req: IncomingMessage }) => ({ req }),
     }),
     DocumentModule,
+    UserModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService, AppResolver],

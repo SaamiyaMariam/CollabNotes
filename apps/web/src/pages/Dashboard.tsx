@@ -8,7 +8,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-offWhite">
-      <h1 className="text-4xl font-bold text-teal-800">Welcome 🎉</h1>
+      <h1 className="text-4xl font-bold text-teal-800">Welcome to the Dashboard! 🎉</h1>
     </div>
   );
 }
