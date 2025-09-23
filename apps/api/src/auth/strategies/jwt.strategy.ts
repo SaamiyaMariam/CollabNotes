@@ -11,9 +11,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // This gets called once JWT is verified
-  async validate(payload: { sub: string; username: string; email: string }) {
-    // In GraphQL, this becomes `req.user`
-    return payload;
-  }
+
+async validate(payload: { sub: string; email: string }) {
+    console.log('Decoded token payload:', payload);
+    return { id: payload.sub, email: payload.email };
+    }
+
 }
