@@ -37,6 +37,7 @@ type Mutation {
   createDocument(data: CreateDocumentInput!): Document!
   deleteDocument(id: String!): Document!
   login(data: LoginInput!): AuthResponse!
+  resetPassword(email: String!, newPassword: String!): User!
   signup(data: SignupInput!): AuthResponse!
   updateDocument(data: UpdateDocumentInput!): Document!
 }
