@@ -1,10 +1,10 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { InputType, Field, ID, Int } from '@nestjs/graphql';
 
 @InputType()
 export class ReorderNoteInput {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => Int)
   sortOrder!: number;
 }
