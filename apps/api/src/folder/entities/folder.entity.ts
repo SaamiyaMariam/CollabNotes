@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Note } from '../../note/entity/note.entity';
+import { Note } from 'src/note/entities/note.entity';
 
 @ObjectType()
 export class Folder {
