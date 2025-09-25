@@ -11,7 +11,7 @@ export class UserService {
   }
     return this.prisma.user.findUnique({
       where: { id },
-      include: { documents: true }, // because your User entity has `documents`
+      // include: { documents: true }, // because your User entity has `documents`
     });
   }
 }
