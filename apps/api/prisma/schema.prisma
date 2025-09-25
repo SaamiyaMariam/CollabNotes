@@ -90,5 +90,5 @@ model NoteCollaborator {
 
 enum CollaboratorRole {
   EDITOR
-  VIEWER
+  CREATOR
 }

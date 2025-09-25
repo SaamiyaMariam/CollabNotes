@@ -1,9 +1,8 @@
 import { registerEnumType } from '@nestjs/graphql';
+import { CollaboratorRole as PrismaCollaboratorRole } from '@prisma/client';
 
-export enum CollaboratorRole {
-  CREATOR = 'CREATOR',
-  EDITOR = 'EDITOR',
-}
+export type CollaboratorRole = PrismaCollaboratorRole;
+export const CollaboratorRole = PrismaCollaboratorRole;
 
 registerEnumType(CollaboratorRole, {
   name: 'CollaboratorRole',

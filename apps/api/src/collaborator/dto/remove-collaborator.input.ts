@@ -1,10 +1,10 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class RemoveCollaboratorInput {
-  @Field(() => ID)
+  @Field()
   noteId!: string;
 
-  @Field(() => ID)
+  @Field()
   userId!: string;
 }

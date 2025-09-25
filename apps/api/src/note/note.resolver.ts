@@ -7,13 +7,17 @@ import { MoveNoteInput } from './dto/move-note.input';
 import { ReorderNoteInput } from './dto/reorder-note.input';
 import { SetNoteColorInput } from './dto/set-note-color.input';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 
 @Resolver(() => Note)
 export class NoteResolver {
-  constructor(private noteService: NoteService) {}
+  constructor(private readonly noteService: NoteService) {}
 
-  @Query(() => [Note])
+  // ───────────────────────────────────────────────
+  // Queries
+  // ───────────────────────────────────────────────
+
+  @Query(() => [Note], { description: 'Get notes in a folder (or loose notes if folderId is null)' })
   async notes(
     @CurrentUser() user: User,
     @Args('folderId', { type: () => String, nullable: true }) folderId?: string,
@@ -21,12 +25,16 @@ export class NoteResolver {
     return this.noteService.findNotes(user.id, folderId);
   }
 
-  @Query(() => Note)
+  @Query(() => Note, { description: 'Get a single note (must be creator or collaborator)' })
   async note(@CurrentUser() user: User, @Args('id') id: string) {
     return this.noteService.findOne(user.id, id);
   }
 
-  @Mutation(() => Note)
+  // ───────────────────────────────────────────────
+  // Mutations
+  // ───────────────────────────────────────────────
+
+  @Mutation(() => Note, { description: 'Create a new note and mark current user as CREATOR' })
   async createNote(
     @CurrentUser() user: User,
     @Args('input') input: CreateNoteInput,
@@ -34,7 +42,7 @@ export class NoteResolver {
     return this.noteService.createNote(user.id, input);
   }
 
-  @Mutation(() => Note)
+  @Mutation(() => Note, { description: 'Rename a note (CREATOR or EDITOR allowed)' })
   async renameNote(
     @CurrentUser() user: User,
     @Args('input') input: RenameNoteInput,
@@ -42,7 +50,7 @@ export class NoteResolver {
     return this.noteService.renameNote(user.id, input.id, input.title);
   }
 
-  @Mutation(() => Note)
+  @Mutation(() => Note, { description: 'Move a note between folders (CREATOR or EDITOR allowed)' })
   async moveNote(
     @CurrentUser() user: User,
     @Args('input') input: MoveNoteInput,
@@ -50,7 +58,7 @@ export class NoteResolver {
     return this.noteService.moveNote(user.id, input.id, input.folderId);
   }
 
-  @Mutation(() => Note)
+  @Mutation(() => Note, { description: 'Set a note color (CREATOR or EDITOR allowed)' })
   async setNoteColor(
     @CurrentUser() user: User,
     @Args('input') input: SetNoteColorInput,
@@ -58,12 +66,12 @@ export class NoteResolver {
     return this.noteService.setNoteColor(user.id, input.id, input.color);
   }
 
-  @Mutation(() => Note)
+  @Mutation(() => Note, { description: 'Soft-delete a note (CREATOR only)' })
   async deleteNote(@CurrentUser() user: User, @Args('id') id: string) {
     return this.noteService.deleteNote(user.id, id);
   }
 
-  @Mutation(() => [Note])
+  @Mutation(() => [Note], { description: 'Reorder notes inside a folder or root (CREATOR or EDITOR allowed)' })
   async reorderNotes(
     @CurrentUser() user: User,
     @Args('folderId', { type: () => String, nullable: true }) folderId: string | null,
