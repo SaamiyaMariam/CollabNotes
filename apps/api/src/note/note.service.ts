@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateNoteInput } from './dto/create-note.input';
 import { assertCanEdit, assertIsCreator } from '../common/authorization';
@@ -7,13 +7,27 @@ import { assertCanEdit, assertIsCreator } from '../common/authorization';
 export class NoteService {
   constructor(private prisma: PrismaService) {}
 
-  async findNotes(userId: string, folderId?: string) {
+async findNotes(userId: string, folderId?: string) {
+    if (folderId) {
+      // Owner’s folder-specific notes
+      return this.prisma.note.findMany({
+        where: {
+          ownerId: userId,
+          deletedAt: null,
+          folderId,
+        },
+        orderBy: { sortOrder: 'asc' },
+      });
+    }
+
+    // Root view: own loose notes + notes shared with me
     return this.prisma.note.findMany({
       where: {
         deletedAt: null,
-        folderId: folderId ?? null,
         OR: [
-          { ownerId: userId },
+          // Own loose notes (folderId = null)
+          { ownerId: userId, folderId: null },
+          // Notes shared with me as collaborator
           { collaborators: { some: { userId } } },
         ],
       },
@@ -28,8 +42,13 @@ export class NoteService {
     });
     if (!note) throw new NotFoundException('Note not found');
 
-    // allow creator or collaborators
-    assertCanEdit(userId, note);
+    if (
+      note.ownerId !== userId &&
+      !note.collaborators.some((c) => c.userId === userId)
+    ) {
+      throw new ForbiddenException('No access to this note');
+    }
+
     return note;
   }
 
@@ -130,4 +149,27 @@ export class NoteService {
     await this.prisma.$transaction(ops);
     return this.findNotes(userId, folderId ?? undefined);
   }
+
+  async findUserNotes(userId: string, folderId?: string) {
+    if (folderId) {
+      // Owner’s view: notes inside their folder
+      return this.prisma.note.findMany({
+        where: { ownerId: userId, folderId, deletedAt: null },
+        orderBy: { sortOrder: 'asc' },
+      });
+    }
+
+    // Root notes + collaborator notes
+    return this.prisma.note.findMany({
+      where: {
+        deletedAt: null,
+        OR: [
+          { ownerId: userId, folderId: null },
+          { collaborators: { some: { userId } } },
+        ],
+      },
+      orderBy: { sortOrder: 'asc' },
+    });
+  }
+
 }

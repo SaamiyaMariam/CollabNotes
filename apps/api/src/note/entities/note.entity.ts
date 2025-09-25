@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Folder } from 'src/folder/entities/folder.entity';
-import { User } from 'src/user/entities/user.entity';
+import { NoteCollaborator } from '../../collaborator/entities/collaborator.entity';
+import { Folder } from '../../folder/entities/folder.entity';
 
 @ObjectType()
 export class Note {
@@ -9,9 +9,9 @@ export class Note {
 
   @Field()
   title!: string;
-
+  
   @Field({ nullable: true })
-  contentJson?: any; // TipTap JSON (GraphQL scalar `JSON` if added)
+  contentJson?: string;
 
   @Field({ nullable: true })
   contentText?: string;
@@ -19,7 +19,7 @@ export class Note {
   @Field({ nullable: true })
   color?: string;
 
-  @Field()
+  @Field(() => Number)
   sortOrder!: number;
 
   @Field({ nullable: true })
@@ -31,9 +31,10 @@ export class Note {
   @Field()
   updatedAt!: Date;
 
-  @Field(() => User)
-  owner!: User;
-
+  // Relations
   @Field(() => Folder, { nullable: true })
   folder?: Folder;
+
+  @Field(() => [NoteCollaborator], { nullable: true })
+  collaborators?: NoteCollaborator[];
 }
