@@ -1,0 +1,60 @@
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Folder } from './entities/folder.entity';
+import { FolderService } from './folder.service';
+import { CreateFolderInput } from './dto/create-folder.input';
+import { RenameFolderInput } from './dto/rename-folder.input';
+import { ReorderFolderInput } from './dto/reorder-folder.input';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from 'src/user/entities/user.entity';
+
+@Resolver(() => Folder)
+export class FolderResolver {
+  constructor(private folderService: FolderService) {}
+
+  @Query(() => [Folder])
+  async folders(
+    @CurrentUser() user: User,
+    @Args('rootOnly', { nullable: true }) rootOnly?: boolean,
+  ) {
+    return this.folderService.findUserFolders(user.id, rootOnly);
+  }
+
+  @Mutation(() => Folder)
+  async createFolder(
+    @CurrentUser() user: User,
+    @Args('input') input: CreateFolderInput,
+  ) {
+    return this.folderService.createFolder(user.id, input);
+  }
+
+  @Mutation(() => Folder)
+  async renameFolder(
+    @CurrentUser() user: User,
+    @Args('input') input: RenameFolderInput,
+  ) {
+    return this.folderService.renameFolder(user.id, input.id, input.name);
+  }
+
+  @Mutation(() => Folder)
+  async setFolderColor(
+    @CurrentUser() user: User,
+    @Args('id') id: string,
+    @Args('color') color: string,
+  ) {
+    return this.folderService.setFolderColor(user.id, id, color);
+  }
+
+  @Mutation(() => Folder)
+  async deleteFolder(@CurrentUser() user: User, @Args('id') id: string) {
+    return this.folderService.deleteFolder(user.id, id);
+  }
+
+  @Mutation(() => [Folder])
+  async reorderFolders(
+    @CurrentUser() user: User,
+    @Args({ name: 'items', type: () => [ReorderFolderInput] })
+    items: ReorderFolderInput[],
+  ) {
+    return this.folderService.reorderFolders(user.id, items);
+  }
+}

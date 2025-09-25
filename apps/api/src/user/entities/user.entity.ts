@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Document } from '../../document/entities/document.entity';
+// import { Document } from '../../document/entities/document.entity';
 
 @ObjectType()
 export class User {
@@ -18,6 +18,6 @@ export class User {
   @Field()
   updatedAt!: Date;
 
-  @Field(() => [Document], { nullable: true })
-  documents?: Document[];
+  // @Field(() => [Document], { nullable: true })
+  // documents?: Document[];
 }
