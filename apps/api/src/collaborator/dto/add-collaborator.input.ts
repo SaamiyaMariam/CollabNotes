@@ -1,10 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { CollaboratorRole } from '@prisma/client';
-import { registerEnumType } from '@nestjs/graphql';
-
-registerEnumType(CollaboratorRole, {
-  name: 'CollaboratorRole',
-});
+import { CollaboratorRole } from './collaborator-role.enum';
 
 @InputType()
 export class AddCollaboratorInput {
