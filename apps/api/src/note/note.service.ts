@@ -7,13 +7,13 @@ import { assertCanEdit, assertIsCreator } from '../common/authorization';
 export class NoteService {
   constructor(private prisma: PrismaService) {}
 
-async findNotes(userId: string, folderId?: string) {
+  async findNotes(userId: string, folderId?: string) {
     if (folderId) {
       // Owner’s folder-specific notes
       return this.prisma.note.findMany({
-        where: {
+        where: { 
           ownerId: userId,
-          deletedAt: null,
+          deletedAt: null, 
           folderId,
         },
         orderBy: { sortOrder: 'asc' },
@@ -132,44 +132,22 @@ async findNotes(userId: string, folderId?: string) {
     folderId: string | null,
     items: { id: string; sortOrder: number }[],
   ) {
-    // only reorder notes user has edit access to
+    // Check permissions first (owner or collaborator with edit access)
+    for (const { id } of items) {
+      const note = await this.findOne(userId, id); // already includes collaborators
+      assertCanEdit(userId, note);
+    }
+
+    // Then run transaction only with raw Prisma updates
     const ops = items.map(({ id, sortOrder }) =>
-      this.prisma.note.updateMany({
-        where: {
-          id,
-          deletedAt: null,
-          OR: [
-            { ownerId: userId },
-            { collaborators: { some: { userId } } },
-          ],
-        },
+      this.prisma.note.update({
+        where: { id },
         data: { sortOrder },
       }),
     );
+
     await this.prisma.$transaction(ops);
     return this.findNotes(userId, folderId ?? undefined);
-  }
-
-  async findUserNotes(userId: string, folderId?: string) {
-    if (folderId) {
-      // Owner’s view: notes inside their folder
-      return this.prisma.note.findMany({
-        where: { ownerId: userId, folderId, deletedAt: null },
-        orderBy: { sortOrder: 'asc' },
-      });
-    }
-
-    // Root notes + collaborator notes
-    return this.prisma.note.findMany({
-      where: {
-        deletedAt: null,
-        OR: [
-          { ownerId: userId, folderId: null },
-          { collaborators: { some: { userId } } },
-        ],
-      },
-      orderBy: { sortOrder: 'asc' },
-    });
   }
 
 }
