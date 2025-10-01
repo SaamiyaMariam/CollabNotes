@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
+import Navbar from "../../components/Navbar";
 import {
   ME_QUERY,
   FOLDERS_QUERY,
@@ -11,26 +12,25 @@ import {
 
 export default function Dashboard() {
   const token = localStorage.getItem("accessToken");
-  if (!token) return <Navigate to="/auth" replace />;
-
-  const navigate = useNavigate();
+  if (!token) {
+    return <Navigate to="/auth" replace />;
+  }
 
   const { data: meData } = useQuery(ME_QUERY);
-  const { data: foldersData, loading: foldersLoading, refetch: refetchFolders } = useQuery(FOLDERS_QUERY);
-  const { data: notesData, loading: notesLoading, refetch: refetchNotes } = useQuery(ROOT_NOTES_QUERY);
+  const { data: foldersData, refetch: refetchFolders } = useQuery(FOLDERS_QUERY);
+  const { data: notesData, refetch: refetchNotes } = useQuery(ROOT_NOTES_QUERY);
 
   const [createFolder] = useMutation(CREATE_FOLDER);
   const [createNote] = useMutation(CREATE_NOTE);
 
-  const [activeTab, setActiveTab] = useState<"workspace" | "all">("workspace");
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [newName, setNewName] = useState("");
+  const [activeTab, setActiveTab] = useState<"workspace" | "all">("workspace");
 
   const username = meData?.me?.displayName ?? "User";
 
   const handleAddFolder = async () => {
-    if (!newName.trim()) return;
     await createFolder({ variables: { name: newName, color: "blue" } });
     setShowFolderModal(false);
     setNewName("");
@@ -38,7 +38,6 @@ export default function Dashboard() {
   };
 
   const handleAddNote = async () => {
-    if (!newName.trim()) return;
     await createNote({ variables: { title: newName } });
     setShowNoteModal(false);
     setNewName("");
@@ -46,74 +45,118 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      {/* Header */}
-      <h1 className="text-4xl font-bold text-teal-800">Hi {username}! 👋</h1>
-      <p className="mt-2 text-lg text-gray-600">Welcome to CollabNotes 🎉</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Navbar */}
+      <Navbar username={username} />
 
-      {/* Tabs */}
-      <div className="mt-6 flex gap-6 border-b">
-        <button
-          onClick={() => setActiveTab("workspace")}
-          className={`pb-2 ${
-            activeTab === "workspace" ? "border-b-2 border-teal-600 font-medium" : "text-gray-500 hover:text-teal-600"
-          }`}
-        >
-          My Workspace
-        </button>
-        <button
-          onClick={() => setActiveTab("all")}
-          className={`pb-2 ${
-            activeTab === "all" ? "border-b-2 border-teal-600 font-medium" : "text-gray-500 hover:text-teal-600"
-          }`}
-        >
-          All Notes
-        </button>
-      </div>
+      <div className="p-8">
+        {/* Greeting */}
+        <h2 className="text-3xl font-semibold text-gray-800">
+          Hi {username}! 👋
+        </h2>
+        <p className="text-gray-500 mt-1">Welcome back to CollabNotes 🎉</p>
 
-      {/* Content */}
-      <div className="mt-6 grid grid-cols-4 gap-4">
+        {/* Tabs */}
+        <div className="mt-6 flex gap-6 border-b">
+          <button
+            className={`pb-2 ${
+              activeTab === "workspace"
+                ? "border-b-2 border-teal-600 font-medium"
+                : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab("workspace")}
+          >
+            My Workspace
+          </button>
+          <button
+            className={`pb-2 ${
+              activeTab === "all"
+                ? "border-b-2 border-teal-600 font-medium"
+                : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab("all")}
+          >
+            All Notes
+          </button>
+        </div>
+
+        {/* Workspace View */}
         {activeTab === "workspace" && (
           <>
             {/* Folders */}
-            {foldersLoading ? <p>Loading folders...</p> : foldersData?.findUserFolders?.map((folder: any) => (
-              <div
-                key={folder.id}
-                className="p-4 rounded-lg shadow bg-white cursor-pointer hover:bg-gray-100"
-                onClick={() => navigate(`/folder/${folder.id}`)}
-              >
-                <h3 className="font-semibold">{folder.name}</h3>
-                <p className="text-sm text-gray-500">{folder.notes.length} notes</p>
-              </div>
-            ))}
+            <h3 className="mt-6 mb-2 text-lg font-semibold text-gray-700">
+              Folders
+            </h3>
+            <div className="grid grid-cols-4 gap-4">
+              {foldersData?.findUserFolders?.length ? (
+                foldersData.findUserFolders.map((folder: any) => (
+                  <div
+                    key={folder.id}
+                    className="p-4 rounded-lg shadow bg-white hover:shadow-md cursor-pointer border-l-4 border-teal-500"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-teal-600">📁</span>
+                      <h4 className="font-semibold">{folder.name}</h4>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {folder.notes.length} notes
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-400 italic">
+                  No folders yet. Create one below 👇
+                </p>
+              )}
+            </div>
 
-            {/* Root Notes */}
-            {notesLoading ? <p>Loading notes...</p> : notesData?.findUserNotes
-              ?.filter((n: any) => !n.folderId)
-              .map((note: any) => (
-                <div
-                  key={note.id}
-                  className="p-4 rounded-lg shadow bg-white cursor-pointer hover:bg-gray-100"
-                  onClick={() => navigate(`/note/${note.id}`)}
-                >
-                  <h3 className="font-semibold">{note.title}</h3>
-                </div>
-              ))}
+            {/* Folderless Notes */}
+            <h3 className="mt-8 mb-2 text-lg font-semibold text-gray-700">
+              Notes
+            </h3>
+            <div className="grid grid-cols-4 gap-4">
+              {notesData?.findUserNotes?.filter((n: any) => !n.folderId).length ? (
+                notesData.findUserNotes
+                  .filter((n: any) => !n.folderId)
+                  .map((note: any) => (
+                    <div
+                      key={note.id}
+                      className="p-4 rounded-lg shadow bg-white hover:shadow-md cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-indigo-600">📝</span>
+                        <h4 className="font-semibold truncate">{note.title}</h4>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <p className="text-gray-400 italic">
+                  Create a note below 👇
+                </p>
+              )}
+            </div>
           </>
         )}
 
+        {/* All Notes View */}
         {activeTab === "all" && (
-          <>
-            {notesLoading ? <p>Loading notes...</p> : notesData?.findUserNotes?.map((note: any) => (
-              <div
-                key={note.id}
-                className="p-4 rounded-lg shadow bg-white cursor-pointer hover:bg-gray-100"
-                onClick={() => navigate(`/note/${note.id}`)}
-              >
-                <h3 className="font-semibold">{note.title}</h3>
-              </div>
-            ))}
-          </>
+          <div className="grid grid-cols-4 gap-4 mt-6">
+            {notesData?.findUserNotes?.length ? (
+              notesData.findUserNotes.map((note: any) => (
+                <div
+                  key={note.id}
+                  className="p-4 rounded-lg shadow bg-white hover:shadow-md cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-indigo-600">📝</span>
+                    <h4 className="font-semibold truncate">{note.title}</h4>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400 italic">No notes yet. Create one below 👇</p>
+            )}
+          </div>
         )}
       </div>
 
