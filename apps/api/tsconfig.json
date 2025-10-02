@@ -21,6 +21,7 @@
     "incremental": true,
 
     "baseUrl": "./",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "erasableSyntaxOnly": false
   }
 }

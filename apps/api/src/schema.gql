@@ -2,9 +2,30 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddCollaboratorInput {
+  noteId: String!
+  role: CollaboratorRole! = EDITOR
+  userEmail: String!
+}
+
 type AuthResponse {
   accessToken: String!
   refreshToken: String!
+}
+
+enum CollaboratorRole {
+  CREATOR
+  EDITOR
+}
+
+input CreateFolderInput {
+  color: String
+  name: String!
+}
+
+input CreateNoteInput {
+  folderId: ID
+  title: String!
 }
 
 """
@@ -12,20 +33,124 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Folder {
+  color: String
+  createdAt: DateTime!
+  deletedAt: DateTime
+  id: ID!
+  name: String!
+  notes: [Note]
+  sortOrder: Float!
+  updatedAt: DateTime!
+}
+
 input LoginInput {
   email: String!
   password: String!
 }
 
+input MoveNoteInput {
+  folderId: ID
+  id: ID!
+}
+
 type Mutation {
+  addCollaborator(input: AddCollaboratorInput!): NoteCollaborator!
+  createFolder(input: CreateFolderInput!): Folder!
+
+  """Create a new note and mark current user as CREATOR"""
+  createNote(input: CreateNoteInput!): Note!
+  deleteFolder(id: String!): Folder!
+
+  """Soft-delete a note (CREATOR only)"""
+  deleteNote(id: String!): Note!
   login(data: LoginInput!): AuthResponse!
+
+  """Move a note between folders (CREATOR or EDITOR allowed)"""
+  moveNote(input: MoveNoteInput!): Note!
+  removeCollaborator(input: RemoveCollaboratorInput!): Boolean!
+  renameFolder(input: RenameFolderInput!): Folder!
+
+  """Rename a note (CREATOR or EDITOR allowed)"""
+  renameNote(input: RenameNoteInput!): Note!
+  reorderFolders(items: [ReorderFolderInput!]!): [Folder!]!
+
+  """Reorder notes inside a folder or root (CREATOR or EDITOR allowed)"""
+  reorderNotes(folderId: String, items: [ReorderNoteInput!]!): [Note!]!
   resetPassword(email: String!, newPassword: String!): User!
+  setFolderColor(color: String!, id: String!): Folder!
+
+  """Set a note color (CREATOR or EDITOR allowed)"""
+  setNoteColor(input: SetNoteColorInput!): Note!
   signup(data: SignupInput!): AuthResponse!
 }
 
+type Note {
+  collaborators: [NoteCollaborator!]
+  color: String
+  contentJson: String
+  contentText: String
+  createdAt: DateTime!
+  deletedAt: DateTime
+  folder: Folder
+  folderId: String
+  id: ID!
+  sortOrder: Float!
+  title: String!
+  updatedAt: DateTime!
+}
+
+type NoteCollaborator {
+  addedBy: String!
+  createdAt: DateTime!
+  note: Note!
+  noteId: ID!
+  role: CollaboratorRole!
+  user: User!
+  userId: ID!
+}
+
 type Query {
+  folders(rootOnly: Boolean): [Folder!]!
   hello: String!
+  listCollaborators(noteId: String!): [NoteCollaborator!]!
   me: User
+
+  """Get a single note (must be creator or collaborator)"""
+  note(id: String!): Note!
+
+  """Get notes in a folder (or loose notes if folderId is null)"""
+  notes(folderId: String): [Note!]!
+}
+
+input RemoveCollaboratorInput {
+  noteId: String!
+  userId: String!
+}
+
+input RenameFolderInput {
+  id: ID!
+  name: String!
+}
+
+input RenameNoteInput {
+  id: ID!
+  title: String!
+}
+
+input ReorderFolderInput {
+  id: ID!
+  sortOrder: Float!
+}
+
+input ReorderNoteInput {
+  id: ID!
+  sortOrder: Int!
+}
+
+input SetNoteColorInput {
+  color: String!
+  id: ID!
 }
 
 input SignupInput {
