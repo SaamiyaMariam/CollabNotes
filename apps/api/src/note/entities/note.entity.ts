@@ -35,6 +35,9 @@ export class Note {
   @Field(() => Folder, { nullable: true })
   folder?: Folder;
 
+  @Field(() => String, { nullable: true })
+  folderId?: string;
+
   @Field(() => [NoteCollaborator], { nullable: true })
   collaborators?: NoteCollaborator[];
 }

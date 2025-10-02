@@ -10,6 +10,9 @@ import { HealthController } from './health/health.controller';
 import { AuthModule } from './auth/auth.module';
 import { IncomingMessage } from 'http';
 import { UserModule } from './user/user.module';
+import { FolderModule } from './folder/folder.module';
+import { NoteModule } from './note/note.module';
+import { CollaboratorModule } from './collaborator/collaborator.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { UserModule } from './user/user.module';
       context: ({ req }: { req: IncomingMessage }) => ({ req }),
     }),
     UserModule,
+    FolderModule,
+    NoteModule,
+    CollaboratorModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService, AppResolver],
