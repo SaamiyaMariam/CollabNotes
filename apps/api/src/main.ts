@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   // Check critical env vars early
@@ -10,16 +11,21 @@ async function bootstrap() {
     }
   });
 
-  const app = await NestFactory.create(AppModule, { bodyParser: false });
+  const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    transform: true,
-    forbidUnknownValues: false,
-  }));
+  // Our single body parser (covers GraphQL too)
+  app.use(json({ limit: '1mb' }));
+  app.use(urlencoded({ extended: false }));
 
-  const port = process.env.PORT ?? 3000;
-  await app.listen(port);
-  console.log(`🚀 API running at http://localhost:${port}/graphql`);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidUnknownValues: false,
+    }),
+  );
+
+  await app.listen(process.env.PORT ?? 3000);
+  console.log(`🚀 API running at http://localhost:${process.env.PORT ?? 3000}/graphql`);
 }
 bootstrap();

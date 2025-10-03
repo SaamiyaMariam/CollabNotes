@@ -206,7 +206,6 @@ export type NoteCollaborator = {
 export type Query = {
   __typename?: 'Query';
   folders: Array<Folder>;
-  hello: Scalars['String']['output'];
   listCollaborators: Array<NoteCollaborator>;
   me?: Maybe<User>;
   /** Get a single note (must be creator or collaborator) */

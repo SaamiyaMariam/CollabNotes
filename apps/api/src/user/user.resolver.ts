@@ -5,20 +5,20 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { PrismaService } from 'prisma/prisma.service';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor
-  (private userService: UserService,
+  constructor(
+    private userService: UserService,
     private prisma: PrismaService,
   ) {}
 
-@Query(() => User, { nullable: true })
-@UseGuards(GqlAuthGuard)
-async me(@CurrentUser() user: { userId: string; email: string }) {
-  return this.userService.findById(user.userId);
-}
+  @Query(() => User, { nullable: true })
+  @UseGuards(GqlAuthGuard)
+  async me(@CurrentUser() user: { id: string; email: string }) {
+    return this.userService.findById(user.id);
+  }
 
   @Mutation(() => User)
   async resetPassword(
@@ -28,10 +28,8 @@ async me(@CurrentUser() user: { userId: string; email: string }) {
     const hash = await bcrypt.hash(newPassword, 10);
 
     return this.prisma.user.update({
-      where: { email: email },
+      where: { email },
       data: { password: hash },
     });
   }
-
-
 }

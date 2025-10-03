@@ -19,11 +19,13 @@ export class FolderService {
   }
 
   async createFolder(userId: string, input: CreateFolderInput) {
+    console.log("createFolder user:", userId);
+    console.log("createFolder input:", input);
     return this.prisma.folder.create({
       data: {
         ownerId: userId,
         name: input.name,
-        color: input.color,
+        color: input.color ?? "blue",
       },
     });
   }
