@@ -17,6 +17,7 @@ import {
   FolderPlus,
   FilePlus,
 } from "lucide-react";
+import CardForm from "../../components/CardForm";
 
 export default function Dashboard() {
   const token = localStorage.getItem("accessToken");
@@ -36,28 +37,8 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"workspace" | "all">("workspace");
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [showNoteModal, setShowNoteModal] = useState(false);
-  const [newName, setNewName] = useState("");
 
   const username = meData?.me?.displayName ?? "User";
-
-  // Handlers
-  const handleAddFolder = async () => {
-    if (!newName.trim()) return;
-    await createFolder({
-      variables: { input: { name: newName, color: "blue" } },
-    });
-    setShowFolderModal(false);
-    setNewName("");
-    refetchFolders();
-  };
-
-  const handleAddNote = async () => {
-    if (!newName.trim()) return;
-    await createNote({ variables: { input: { title: newName } } });
-    setShowNoteModal(false);
-    setNewName("");
-    refetchNotes();
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff] flex flex-col pt-2 px-2">
@@ -206,56 +187,35 @@ export default function Dashboard() {
 
         {/* Folder Modal */}
         {showFolderModal && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-              <button
-                onClick={() => setShowFolderModal(false)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-              <h2 className="text-xl font-bold mb-4">New Folder</h2>
-              <input
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="Folder name"
-                className="border w-full px-3 py-2 rounded mb-4"
-              />
-              <button
-                onClick={handleAddFolder}
-                className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 w-full"
-              >
-                Create
-              </button>
-            </div>
-          </div>
+          <CardForm
+            heading="New Folder"
+            placeholder="Folder name"
+            buttonText="Create"
+            onSubmit={async (val) => {
+              await createFolder({ variables: { input: { name: val, color: "blue" } } });
+              setShowFolderModal(false);
+              refetchFolders();
+            }}
+            onClose={() => setShowFolderModal(false)}
+          />
         )}
 
         {/* Note Modal */}
         {showNoteModal && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-              <button
-                onClick={() => setShowNoteModal(false)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-              <h2 className="text-xl font-bold mb-4">New Note</h2>
-              <input
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="Note title"
-                className="border w-full px-3 py-2 rounded mb-4"
-              />
-              <button
-                onClick={handleAddNote}
-                className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-full"
-              >
-                Create
-              </button>
-            </div>
-          </div>
+          <CardForm
+            heading="New Note"
+            placeholder="Note title"
+            buttonText="Create"
+            onSubmit={async (val) => {
+              if (!val.trim()) return;
+              await createNote({
+                variables: { input: { title: val } },
+              });
+              setShowNoteModal(false);
+              refetchNotes();
+            }}
+            onClose={() => setShowNoteModal(false)}
+          />
         )}
         {/* -------------------------------------------------------- */}
       </main>
