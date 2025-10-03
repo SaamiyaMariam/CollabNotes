@@ -21,7 +21,7 @@ export default function Navbar({ username }: NavbarProps) {
       {/* Brand */}
       <h1
         className="text-2xl font-bold text-white cursor-pointer font-poppins"
-        onClick={() => navigate("/dashboard")}
+        onClick={() => navigate("/app")}
       >
         CollabNotes
       </h1>
