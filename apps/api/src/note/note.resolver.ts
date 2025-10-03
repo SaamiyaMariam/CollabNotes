@@ -8,6 +8,8 @@ import { ReorderNoteInput } from './dto/reorder-note.input';
 import { SetNoteColorInput } from './dto/set-note-color.input';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../user/entities/user.entity';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 
 @Resolver(() => Note)
 export class NoteResolver {
@@ -17,6 +19,7 @@ export class NoteResolver {
   // Queries
   // ───────────────────────────────────────────────
 
+  @UseGuards(GqlAuthGuard)  
   @Query(() => [Note], { description: 'Get notes in a folder (or loose notes if folderId is null)' })
   async notes(
     @CurrentUser() user: User,

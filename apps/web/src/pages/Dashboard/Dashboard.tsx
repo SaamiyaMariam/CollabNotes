@@ -89,7 +89,7 @@ export default function Dashboard() {
         <div className="px-8 pt-2">
           <div
             className="rounded-2xl p-6 text-white shadow-sm"
-            style={{ background: "linear-gradient(135deg, #f4c3c8, #eb8db5)" }}
+            style={{ background: "linear-gradient(135deg, #eb8db5, #f4c3c8)" }}
           >
             <h1 className="text-4xl font-bold font-poppins">
               Hi {username}! 👋

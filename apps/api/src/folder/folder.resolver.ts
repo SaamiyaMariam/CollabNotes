@@ -6,11 +6,14 @@ import { RenameFolderInput } from './dto/rename-folder.input';
 import { ReorderFolderInput } from './dto/reorder-folder.input';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 
 @Resolver(() => Folder)
 export class FolderResolver {
   constructor(private folderService: FolderService) {}
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => [Folder])
   async folders(
     @CurrentUser() user: User,
