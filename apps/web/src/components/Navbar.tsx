@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Dropdown from "./Dropdown";
 
 interface NavbarProps {
   username: string;
@@ -13,25 +14,41 @@ export default function Navbar({ username }: NavbarProps) {
   };
 
   return (
-    <div className="flex justify-between items-center px-8 py-4 bg-white shadow-sm">
-      {/* App Name */}
+    <div
+      className="w-full flex justify-between items-center px-6 py-3 shadow-md rounded-xl"
+      style={{ background: "linear-gradient(135deg, #f4c3c8, #eb8db5)" }}
+    >
+      {/* Brand */}
       <h1
-        className="text-2xl font-bold text-teal-700 cursor-pointer"
+        className="text-2xl font-bold text-white cursor-pointer font-poppins"
         onClick={() => navigate("/dashboard")}
       >
         CollabNotes
       </h1>
 
-      {/* User Info + Logout */}
-      <div className="flex items-center gap-4">
-        <span className="text-gray-700 font-medium">{username}</span>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-gray-500 hover:text-red-600 transition"
-        >
-          Logout
-        </button>
+      {/* Search */}
+      <div className="flex-1 mx-12">
+        <input
+          type="text"
+          placeholder="Search notes..."
+          className="w-full max-w-md px-4 py-1.5 rounded-full bg-white/70 shadow-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pinkPurple"
+        />
       </div>
+
+      {/* User Dropdown */}
+      <Dropdown
+        label={
+          <div className="flex items-center gap-2">
+            <span className="text-white font-medium">{username}</span>
+            <div className="w-9 h-9 rounded-full bg-bluePastel flex items-center justify-center shadow">
+              <span className="text-white font-bold">{username[0]}</span>
+            </div>
+          </div>
+        }
+        options={[
+          { label: "Logout", onClick: handleLogout },
+        ]}
+      />
     </div>
   );
 }
