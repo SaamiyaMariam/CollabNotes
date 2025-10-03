@@ -69,7 +69,7 @@ export default function Dashboard() {
         {/* Sidebar */}
         <aside className="w-16 mt-[8px] border-r border-white/60 bg-white/70 backdrop-blur-sm shadow-sm rounded-r-3xl flex flex-col items-center gap-5 py-6">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/app")}
             className="p-2 rounded-xl bg-white/70 hover:bg-white shadow-sm transition text-gray-600 hover:text-[#eb8db5]"
           >
             <Home size={22} />
