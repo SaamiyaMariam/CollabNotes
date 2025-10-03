@@ -112,7 +112,6 @@ type NoteCollaborator {
 
 type Query {
   folders(rootOnly: Boolean): [Folder!]!
-  hello: String!
   listCollaborators(noteId: String!): [NoteCollaborator!]!
   me: User
 

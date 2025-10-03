@@ -22,11 +22,15 @@ export class FolderResolver {
     return this.folderService.findUserFolders(user.id, rootOnly);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Folder)
   async createFolder(
     @CurrentUser() user: User,
-    @Args('input') input: CreateFolderInput,
+    @Args('input', { type: () => CreateFolderInput }) input: CreateFolderInput,
+    
   ) {
+console.log("RAW input:", JSON.stringify(input, null, 2));
+  console.log("Keys:", Object.keys(input));
     return this.folderService.createFolder(user.id, input);
   }
 
