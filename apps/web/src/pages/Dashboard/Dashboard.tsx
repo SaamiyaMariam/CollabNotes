@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   return (
     // <div className="min-h-screen bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff] flex flex-col pt-2 px-2">
-  <div className="min-h-screen bg-gradient-to-b from-[#ffffff] to-[#f2ffff] flex flex-col pt-2 px-2"> 
+  <div className="min-h-screen bg-gradient-to-b from-[#ffffff] to-[#f2ffff] flex flex-col pt-16 px-2"> 
     {/* Navbar (always at top) */}
       <Navbar username={username} />
 

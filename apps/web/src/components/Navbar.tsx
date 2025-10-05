@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Dropdown from "./Dropdown";
 
 interface NavbarProps {
@@ -7,16 +8,35 @@ interface NavbarProps {
 
 export default function Navbar({ username }: NavbarProps) {
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     navigate("/auth");
   };
 
+  // Detect scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) setScrolled(true);
+      else setScrolled(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div
-      className="w-full flex justify-between items-center px-6 py-3 shadow-md rounded-xl"
+    className={`fixed top-1 left-2 right-4 z-50 flex justify-between items-center px-6 py-3 shadow-md rounded-xl transition-all duration-300 ${
+            scrolled && !hovered ? "opacity-20" : "opacity-100"
+          }`}      
       style={{ background: "linear-gradient(135deg, #f4c3c8, #eb8db5)" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
     >
       {/* Brand */}
       <h1
