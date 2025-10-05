@@ -1,0 +1,105 @@
+/* ===== NoteCard.css ===== */
+.note-card {
+  border-radius: 1rem;
+  padding: 1rem;
+  height: 160px;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.note-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+/* --- Note Icon Styling --- */
+.note-wrapper {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  width: 70px;
+  height: 56px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    rgb(253, 197, 107) 15%, 
+    rgb(255, 187, 78) 28%,
+    rgba(0, 0, 0, 0.25) 29%, 
+    rgba(0, 0, 0, 0.1) 30%,
+    #eee 32% 49%,
+    rgba(0, 0, 0, 0.25) 50%,
+    #eee 51% 74%,
+    rgba(0, 0, 0, 0.25) 75%,
+    #eee 76%
+  );
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Dotted line */
+.note-wrapper::before {
+  content: "...................";
+  position: absolute;
+  top: 18%;
+  left: 6%;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  color: rgba(0,0,0,0.25);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* --- Info Text --- */
+.note-info {
+  margin-top: auto;
+  padding-left: 0.2rem;
+}
+
+.note-title {
+  font-weight: 600;
+  color: #333;
+  margin-top: 85px;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.note-subtitle {
+  color: #7c7c7c;
+  font-size: 0.85rem;
+}
+
+/* --- Hover animation --- */
+
+/* Slight tilt of the notepad */
+.note-card:hover .note-wrapper {
+  transform: rotateX(15deg) translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Make it smooth */
+.note-wrapper {
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
+  transform-origin: bottom center;
+}
+
+/* Animate dots — create illusion of movement */
+.note-card:hover .note-wrapper::before {
+  animation: moveDots 0.8s linear infinite;
+}
+
+@keyframes moveDots {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-6px);
+  }
+}
+

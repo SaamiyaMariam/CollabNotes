@@ -59,6 +59,7 @@ export class NoteService {
         ownerId: userId,
         title: input.title,
         folderId: input.folderId ?? null,
+        color: input.color ?? '#A8D1E7',
         collaborators: {
           create: {
             userId,

@@ -41,6 +41,7 @@ export type CreateFolderInput = {
 };
 
 export type CreateNoteInput = {
+  color?: InputMaybe<Scalars['String']['input']>;
   folderId?: InputMaybe<Scalars['ID']['input']>;
   title: Scalars['String']['input'];
 };
@@ -306,7 +307,7 @@ export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typenam
 export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, folderId?: string | null, color?: string | null }> };
+export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, folderId?: string | null, color?: string | null, updatedAt: any }> };
 
 export type CreateFolderMutationVariables = Exact<{
   input: CreateFolderInput;
@@ -485,6 +486,7 @@ export const GetNotesDocument = gql`
     title
     folderId
     color
+    updatedAt
   }
 }
     `;

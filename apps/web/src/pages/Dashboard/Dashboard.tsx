@@ -41,8 +41,9 @@ export default function Dashboard() {
   const username = meData?.me?.displayName ?? "User";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff] flex flex-col pt-2 px-2">
-      {/* Navbar (always at top) */}
+    // <div className="min-h-screen bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff] flex flex-col pt-2 px-2">
+  <div className="min-h-screen bg-gradient-to-b from-[#ffffff] to-[#f2ffff] flex flex-col pt-2 px-2"> 
+    {/* Navbar (always at top) */}
       <Navbar username={username} />
 
       {/* Row below Navbar */}
@@ -63,11 +64,11 @@ export default function Dashboard() {
         </aside>
 
       {/* Main */}
-       <main className="flex-1 mt-2 w-full">
-        {/* Navbar (your gradient/rounded version) */}
+       <main className="flex-1 mt-2 w-full bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff] rounded-2xl shadow-inner">
+        {/* Navbar */}
 
         {/* Greeting card */}
-        <div className="px-8 pt-2">
+        <div className="px-2 pt-2">
           <div
             className="rounded-2xl p-6 text-white shadow-sm"
             style={{ background: "linear-gradient(135deg, #eb8db5, #f4c3c8)" }}

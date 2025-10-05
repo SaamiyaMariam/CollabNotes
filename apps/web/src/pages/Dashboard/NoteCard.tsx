@@ -1,5 +1,5 @@
 import type { GetNotesQuery } from "../../generated/graphql";
-import { FileText } from "lucide-react";
+import "../../styles/NoteCard.css";
 
 type Note = GetNotesQuery["notes"][0];
 
@@ -11,19 +11,22 @@ interface NoteCardProps {
 export default function NoteCard({ note, onClick }: NoteCardProps) {
   return (
     <div
+      className="note-card"
       onClick={onClick}
-      className="p-5 rounded-xl shadow-sm bg-white cursor-pointer hover:shadow-md transition flex flex-col gap-2 border border-gray-100"
+      style={{
+        backgroundColor: note.color || "#cfb5eb",
+      }}
     >
-      <div className="flex items-center justify-between">
-        <FileText className="text-indigo-600" size={22} />
-        {note.color && (
-          <span
-            className="w-4 h-4 rounded-full"
-            style={{ backgroundColor: note.color }}
-          ></span>
-        )}
+      <div className="note-wrapper"></div>
+
+      <div className="note-info">
+        <h3 className="note-title">{note.title}</h3>
+        <p className="note-subtitle">
+          {note.updatedAt
+            ? `Updated ${new Date(note.updatedAt).toLocaleDateString()}`
+            : "No updates yet"}
+        </p>
       </div>
-      <h3 className="font-semibold text-gray-800 truncate">{note.title}</h3>
     </div>
   );
 }
