@@ -24,6 +24,7 @@ input CreateFolderInput {
 }
 
 input CreateNoteInput {
+  color: String
   folderId: ID
   title: String!
 }

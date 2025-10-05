@@ -37,10 +37,11 @@ export class NoteResolver {
   // Mutations
   // ───────────────────────────────────────────────
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Note, { description: 'Create a new note and mark current user as CREATOR' })
   async createNote(
     @CurrentUser() user: User,
-    @Args('input') input: CreateNoteInput,
+    @Args('input', { type: () => CreateNoteInput }) input: CreateNoteInput,
   ) {
     return this.noteService.createNote(user.id, input);
   }

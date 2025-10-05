@@ -5,7 +5,7 @@ import { IsString, IsOptional, Length } from 'class-validator';
 export class CreateFolderInput {
   @Field()
   @IsString()
-  @Length(1, 100) // or whatever limit you want
+  @Length(1, 100)
   name!: string;
 
   @Field({ nullable: true })
