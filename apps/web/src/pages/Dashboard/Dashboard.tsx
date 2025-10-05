@@ -192,7 +192,7 @@ export default function Dashboard() {
             placeholder="Folder name"
             buttonText="Create"
             onSubmit={async (val) => {
-              await createFolder({ variables: { input: { name: val, color: "blue" } } });
+              await createFolder({ variables: { input: { name: val, color: "#cfb5eb" } } });
               setShowFolderModal(false);
               refetchFolders();
             }}

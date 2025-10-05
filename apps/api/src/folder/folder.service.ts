@@ -25,7 +25,7 @@ export class FolderService {
       data: {
         ownerId: userId,
         name: input.name,
-        color: input.color ?? "blue",
+        color: input.color ?? "#f2bdd6",
       },
     });
   }
