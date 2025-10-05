@@ -1,0 +1,111 @@
+.folder-card {
+  background: #f6ecf5;
+  border-radius: 1rem;
+  padding: 1rem;
+  height: 160px;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.folder-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+/* ===== Folder Animation ===== */
+.folder-wrapper {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}
+
+.folder {
+  position: relative;
+  width: 70px;
+  height: 48px;
+  transition: transform 0.35s ease;
+  transform-style: preserve-3d;
+}
+
+.folder .front-side,
+.folder .back-side {
+  position: absolute;
+  transform-origin: bottom center;
+  transition: transform 0.35s ease;
+}
+
+/* Back folder layers for 3D depth */
+.folder .back-side::before,
+.folder .back-side::after {
+  content: "";
+  display: block;
+  background-color: white;
+  opacity: 0.5;
+  z-index: 0;
+  width: var(--folder-W);
+  height: var(--folder-H);
+  position: absolute;
+  transform-origin: bottom center;
+  border-radius: 15px;
+  transition: transform 350ms;
+  z-index: 0;
+}
+
+.folder-card:hover .back-side::before {
+  transform: rotateX(-8deg) skewX(4deg);
+}
+.folder-card:hover .back-side::after {
+  transform: rotateX(-18deg) skewX(10deg);
+}
+
+/* Top tab */
+.folder .tip {
+  background: linear-gradient(135deg, #ff9a56, #ff6f56);
+  width: 48px;
+  height: 14px;
+  border-radius: 10px 10px 0 0;
+  position: absolute;
+  top: -6px;
+  left: 0px;
+  z-index: 2;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* Folder cover */
+.folder .cover {
+  background: linear-gradient(135deg, #ffe563, #ffc663);
+  width: 70px;
+  height: 48px;
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+/* Hover: open front side */
+.folder-card:hover .front-side {
+  transform: rotateX(-40deg) skewX(10deg);
+}
+
+/* ===== Info Text ===== */
+.folder-info {
+  margin-top: auto;
+  padding-left: 0.2rem;
+}
+
+.folder-title {
+  font-weight: 600;
+  color: #333;
+  margin-top: 70px;
+  font-size: 1rem;
+}
+
+.folder-count {
+  color: #7c7c7c;
+  font-size: 0.85rem;
+}
