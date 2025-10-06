@@ -1,61 +1,43 @@
 /* apps/web/src/components/ColorPalette.css */
 
 .container {
-  height: 200px;
-  width: 300px;
+  width: 50%;                      /* half the parent container width */
+  max-width: 50vw !important;
+  height: 160px;
   border-radius: 1em;
   overflow: hidden;
-  box-shadow: 0 10px 10px #4b3c50;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   font-family: 'Poppins', sans-serif;
+  background: white;
 }
 
 .palette {
   display: flex;
-  height: 86%;
+  height: 80%;
   width: 100%;
 }
 
 .color {
-  height: 100%;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   transition: flex 0.15s linear, box-shadow 0.15s ease;
   cursor: pointer;
 }
 
 .color span {
   opacity: 0;
+  font-size: 0.8rem;                /* smaller text for names */
   transition: opacity 0.15s linear;
 }
 
-.color:nth-child(1) {
-  background: #FFBFC5;
-}
-
-.color:nth-child(2) {
-  background: #A8D1E7;
-}
-
-.color:nth-child(3) {
-  background: #EB8DB5;
-}
-
-.color:nth-child(4) {
-  background: #D4A3C4;
-}
-
-.color:nth-child(5) {
-  background: #bba3d4;
-}
-
 .color:hover {
-  flex: 2;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  flex: 1.5;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 5px 15px;
 }
 
 .color:hover span {
@@ -63,15 +45,13 @@
 }
 
 #stats {
-  height: 14%;
-  width: 100%;
-  background: white;
+  height: 20%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5em;
-  box-sizing: border-box;
-  color: #bebebe;
+  padding: 0 1em;
+  background: #fff;
+  color: #777;
   font-size: 0.85rem;
 }
 
