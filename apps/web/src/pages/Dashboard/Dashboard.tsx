@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import CardForm from "../../components/CardForm";
 import ColorPaletteModal from "../../components/ColorPaletteModal";
+import Dropdown from "../../components/Dropdown";
+
 
 export default function Dashboard() {
   const token = localStorage.getItem("accessToken");
@@ -46,7 +48,8 @@ export default function Dashboard() {
   const [updateNoteColor] = useSetNoteColorMutation();
   // const [deleteFolders] = useDeleteFoldersMutation();
   // const [deleteNotes] = useDeleteNotesMutation();
-  
+  const [showOptionsDropdown, setShowOptionsDropdown] = useState(false);
+
 
   const username = meData?.me?.displayName ?? "User";
 
@@ -175,37 +178,52 @@ export default function Dashboard() {
             >
               <FilePlus size={18} />
             </button>
-            <div className="relative">
-              <button
-                className={`p-3 rounded-full shadow-md transition ${
-                  selectedItems.length > 0
-                    ? "bg-white text-gray-700 hover:shadow-lg hover:bg-gray-50"
-                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                }`}
-                title="Options"
-                disabled={selectedItems.length === 0}
-              >
-                <MoreHorizontal size={18} />
-              </button>
-
-              {/* Dropdown menu */}
-              {selectedItems.length > 0 && (
-                <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-100 z-20">
-                  <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setShowColorModal(true)}
-                  >
-                    🎨 Change Color
-                  </button>
-                  <button
-                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                    // onClick={() => handleDeleteSelected()}
-                  >
-                    🗑️ Delete Selected
-                  </button>
+            <Dropdown
+              label={
+                <div
+                  className="p-3 rounded-full shadow-md bg-white text-gray-700 hover:shadow-lg hover:bg-gray-50 transition"
+                  title="Options"
+                >
+                  <MoreHorizontal size={18} />
                 </div>
-              )}
-            </div>
+              }
+              options={[
+                {
+                  label: (
+                    <span
+                      className={`flex items-center gap-2 ${
+                        selectedItems.length === 0
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-pointer"
+                      }`}
+                    >
+                      Change Color
+                    </span>
+                  ),
+                  onClick: () => {
+                    if (selectedItems.length === 0) return;
+                    setShowColorModal(true);
+                  },
+                },
+                {
+                  label: (
+                    <span
+                      className={`flex items-center gap-2 ${
+                        selectedItems.length === 0
+                          ? "opacity-40 cursor-not-allowed"
+                          : "cursor-pointer text-red-100"
+                      }`}
+                    >
+                      Delete Selected
+                    </span>
+                  ),
+                  onClick: () => {
+                    if (selectedItems.length === 0) return;
+                    // handleDeleteSelected();
+                  },
+                },
+              ]}
+            />
 
           </div>
         </div>

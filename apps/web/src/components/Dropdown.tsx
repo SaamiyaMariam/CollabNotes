@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 
 interface DropdownProps {
   label: React.ReactNode;
-  options: { label: string; onClick: () => void }[];
+  options: { label: React.ReactNode; onClick: () => void }[];
 }
 
 export default function Dropdown({ label, options }: DropdownProps) {
