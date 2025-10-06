@@ -1,5 +1,6 @@
 import type { GetNotesQuery } from "../../generated/graphql";
 import "../../styles/NoteCard.css";
+import Checkbox from "../../components/Checkbox";
 
 type Note = GetNotesQuery["notes"][0];
 
@@ -19,14 +20,12 @@ export default function NoteCard({ note, onClick, selected, onSelectToggle }: No
       }}
     >
       {/* Checkbox */}
-      <input
-        type="checkbox"
+      <Checkbox
         checked={selected}
         onChange={(e) => {
           e.stopPropagation();
           onSelectToggle();
         }}
-        className="absolute top-2 left-2 h-4 w-4 accent-[#eb8db5] cursor-pointer z-10"
       />
       
       <div onClick={onClick} className="w-full h-full cursor-pointer flex flex-col justify-between">

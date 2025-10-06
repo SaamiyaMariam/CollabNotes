@@ -48,8 +48,6 @@ export default function Dashboard() {
   const [updateNoteColor] = useSetNoteColorMutation();
   // const [deleteFolders] = useDeleteFoldersMutation();
   // const [deleteNotes] = useDeleteNotesMutation();
-  const [showOptionsDropdown, setShowOptionsDropdown] = useState(false);
-
 
   const username = meData?.me?.displayName ?? "User";
 

@@ -1,5 +1,6 @@
 import type { GetFoldersQuery } from "../../generated/graphql";
 import "../../styles/FolderCard.css";
+import Checkbox from "../../components/Checkbox";
 
 type Folder = GetFoldersQuery["folders"][0];
 
@@ -12,22 +13,24 @@ interface FolderCardProps {
 
 export default function FolderCard({ folder, onClick, selected, onSelectToggle }: FolderCardProps) {
   return (
-    <div className="folder-card"
-    style={{
-        backgroundColor: folder.color || "#cfb5eb",
-      }}>
-        {/* Checkbox */}
-        <input
-          type="checkbox"
-          checked={selected}
-          onChange={(e) => {
-            e.stopPropagation();
-            onSelectToggle();
-          }}
-          className="absolute top-2 left-2 h-4 w-4 accent-[#eb8db5] cursor-pointer z-10"
-        />
+    <div
+      className="folder-card relative"
+      style={{ backgroundColor: folder.color || "#cfb5eb" }}
+    >
+      {/* Checkbox FIRST, so it layers above everything */}
+      <Checkbox
+        checked={selected}
+        onChange={(e) => {
+          e.stopPropagation();
+          onSelectToggle();
+        }}
+      />
 
-      <div onClick={onClick} className="w-full h-full cursor-pointer flex flex-col justify-between">
+      {/* Rest of the folder content */}
+      <div
+        onClick={onClick}
+        className="w-full h-full cursor-pointer flex flex-col justify-between"
+      >
         <div className="folder-wrapper">
           <div className="folder">
             <div className="front-side">
@@ -41,8 +44,10 @@ export default function FolderCard({ folder, onClick, selected, onSelectToggle }
         <div className="folder-info">
           <h3 className="folder-title">{folder.name}</h3>
           <p className="folder-count">{folder.notes?.length ?? 0} notes</p>
-          </div>
         </div>
       </div>
+    </div>
+
+
   );
 }
