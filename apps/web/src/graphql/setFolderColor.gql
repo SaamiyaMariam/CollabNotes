@@ -1,0 +1,7 @@
+mutation SetFolderColor($id: String!, $color: String!) {
+  setFolderColor(id: $id, color: $color) {
+    id
+    name
+    color
+  }
+}

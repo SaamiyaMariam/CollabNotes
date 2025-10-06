@@ -80,9 +80,7 @@ type Mutation {
   reorderNotes(folderId: String, items: [ReorderNoteInput!]!): [Note!]!
   resetPassword(email: String!, newPassword: String!): User!
   setFolderColor(color: String!, id: String!): Folder!
-
-  """Set a note color (CREATOR or EDITOR allowed)"""
-  setNoteColor(input: SetNoteColorInput!): Note!
+  setNoteColor(color: String!, id: String!): Note!
   signup(data: SignupInput!): AuthResponse!
 }
 
@@ -146,11 +144,6 @@ input ReorderFolderInput {
 input ReorderNoteInput {
   id: ID!
   sortOrder: Int!
-}
-
-input SetNoteColorInput {
-  color: String!
-  id: ID!
 }
 
 input SignupInput {

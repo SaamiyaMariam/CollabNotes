@@ -1,0 +1,8 @@
+mutation CreateFolder($input: CreateFolderInput!) {
+  createFolder(input: $input) {
+    id
+    name
+    color
+    createdAt
+  }
+}

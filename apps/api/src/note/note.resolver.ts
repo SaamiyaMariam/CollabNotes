@@ -62,12 +62,14 @@ export class NoteResolver {
     return this.noteService.moveNote(user.id, input.id, input.folderId);
   }
 
-  @Mutation(() => Note, { description: 'Set a note color (CREATOR or EDITOR allowed)' })
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Note)
   async setNoteColor(
     @CurrentUser() user: User,
-    @Args('input') input: SetNoteColorInput,
+    @Args('id') id: string,
+    @Args('color') color: string,
   ) {
-    return this.noteService.setNoteColor(user.id, input.id, input.color);
+    return this.noteService.setNoteColor(user.id, id, color);
   }
 
   @Mutation(() => Note, { description: 'Soft-delete a note (CREATOR only)' })

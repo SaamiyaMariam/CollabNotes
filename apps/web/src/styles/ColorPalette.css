@@ -1,0 +1,82 @@
+/* apps/web/src/components/ColorPalette.css */
+
+.container {
+  height: 200px;
+  width: 300px;
+  border-radius: 1em;
+  overflow: hidden;
+  box-shadow: 0 10px 10px #4b3c50;
+  font-family: 'Poppins', sans-serif;
+}
+
+.palette {
+  display: flex;
+  height: 86%;
+  width: 100%;
+}
+
+.color {
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: flex 0.15s linear, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.color span {
+  opacity: 0;
+  transition: opacity 0.15s linear;
+}
+
+.color:nth-child(1) {
+  background: #FFBFC5;
+}
+
+.color:nth-child(2) {
+  background: #A8D1E7;
+}
+
+.color:nth-child(3) {
+  background: #EB8DB5;
+}
+
+.color:nth-child(4) {
+  background: #D4A3C4;
+}
+
+.color:nth-child(5) {
+  background: #bba3d4;
+}
+
+.color:hover {
+  flex: 2;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.color:hover span {
+  opacity: 1;
+}
+
+#stats {
+  height: 14%;
+  width: 100%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5em;
+  box-sizing: border-box;
+  color: #bebebe;
+  font-size: 0.85rem;
+}
+
+#stats svg {
+  fill: #bebebe;
+  transform: scale(1.2);
+  cursor: pointer;
+}

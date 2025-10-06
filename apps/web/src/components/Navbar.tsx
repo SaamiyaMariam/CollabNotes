@@ -29,7 +29,7 @@ export default function Navbar({ username }: NavbarProps) {
 
   return (
     <div
-    className={`fixed top-1 left-2 right-4 z-50 flex justify-between items-center px-6 py-3 shadow-md rounded-xl transition-all duration-300 ${
+    className={`fixed top-1 left-2 right-2 z-50 flex justify-between items-center px-6 py-3 shadow-md rounded-xl transition-all duration-300 ${
             scrolled && !hovered ? "opacity-20" : "opacity-100"
           }`}      
       style={{ background: "linear-gradient(135deg, #f4c3c8, #eb8db5)" }}
