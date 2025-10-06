@@ -1,0 +1,62 @@
+/* apps/web/src/components/ColorPalette.css */
+
+.container {
+  width: 50%;                      /* half the parent container width */
+  max-width: 50vw !important;
+  height: 160px;
+  border-radius: 1em;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  background: white;
+}
+
+.palette {
+  display: flex;
+  height: 80%;
+  width: 100%;
+}
+
+.color {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: flex 0.15s linear, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.color span {
+  opacity: 0;
+  font-size: 0.8rem;                /* smaller text for names */
+  transition: opacity 0.15s linear;
+}
+
+.color:hover {
+  flex: 1.5;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 5px 15px;
+}
+
+.color:hover span {
+  opacity: 1;
+}
+
+#stats {
+  height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1em;
+  background: #fff;
+  color: #777;
+  font-size: 0.85rem;
+}
+
+#stats svg {
+  fill: #bebebe;
+  transform: scale(1.2);
+  cursor: pointer;
+}

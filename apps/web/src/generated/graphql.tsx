@@ -89,7 +89,6 @@ export type Mutation = {
   reorderNotes: Array<Note>;
   resetPassword: User;
   setFolderColor: Folder;
-  /** Set a note color (CREATOR or EDITOR allowed) */
   setNoteColor: Note;
   signup: AuthResponse;
 };
@@ -169,7 +168,8 @@ export type MutationSetFolderColorArgs = {
 
 
 export type MutationSetNoteColorArgs = {
-  input: SetNoteColorInput;
+  color: Scalars['String']['input'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -260,11 +260,6 @@ export type ReorderNoteInput = {
   sortOrder: Scalars['Int']['input'];
 };
 
-export type SetNoteColorInput = {
-  color: Scalars['String']['input'];
-  id: Scalars['ID']['input'];
-};
-
 export type SignupInput = {
   displayName: Scalars['String']['input'];
   email: Scalars['String']['input'];
@@ -280,6 +275,51 @@ export type User = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type CreateFolderMutationVariables = Exact<{
+  input: CreateFolderInput;
+}>;
+
+
+export type CreateFolderMutation = { __typename?: 'Mutation', createFolder: { __typename?: 'Folder', id: string, name: string, color?: string | null, createdAt: any } };
+
+export type CreateNoteMutationVariables = Exact<{
+  input: CreateNoteInput;
+}>;
+
+
+export type CreateNoteMutation = { __typename?: 'Mutation', createNote: { __typename?: 'Note', id: string, title: string, color?: string | null, folderId?: string | null, createdAt: any } };
+
+export type GetFoldersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typename?: 'Folder', id: string, name: string, color?: string | null, sortOrder: number, createdAt: any, updatedAt: any, notes?: Array<{ __typename?: 'Note', id: string, title: string, color?: string | null } | null> | null }> };
+
+export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, color?: string | null, folderId?: string | null, createdAt: any, updatedAt: any }> };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, displayName: string, email: string } | null };
+
+export type SetFolderColorMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  color: Scalars['String']['input'];
+}>;
+
+
+export type SetFolderColorMutation = { __typename?: 'Mutation', setFolderColor: { __typename?: 'Folder', id: string, name: string, color?: string | null } };
+
+export type SetNoteColorMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  color: Scalars['String']['input'];
+}>;
+
+
+export type SetNoteColorMutation = { __typename?: 'Mutation', setNoteColor: { __typename?: 'Note', id: string, color?: string | null } };
+
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
 }>;
@@ -294,36 +334,285 @@ export type SignupMutationVariables = Exact<{
 
 export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
+export const CreateFolderDocument = gql`
+    mutation CreateFolder($input: CreateFolderInput!) {
+  createFolder(input: $input) {
+    id
+    name
+    color
+    createdAt
+  }
+}
+    `;
+export type CreateFolderMutationFn = Apollo.MutationFunction<CreateFolderMutation, CreateFolderMutationVariables>;
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, email: string, displayName: string } | null };
+/**
+ * __useCreateFolderMutation__
+ *
+ * To run a mutation, you first call `useCreateFolderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFolderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFolderMutation, { data, loading, error }] = useCreateFolderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateFolderMutation(baseOptions?: Apollo.MutationHookOptions<CreateFolderMutation, CreateFolderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFolderMutation, CreateFolderMutationVariables>(CreateFolderDocument, options);
+      }
+export type CreateFolderMutationHookResult = ReturnType<typeof useCreateFolderMutation>;
+export type CreateFolderMutationResult = Apollo.MutationResult<CreateFolderMutation>;
+export type CreateFolderMutationOptions = Apollo.BaseMutationOptions<CreateFolderMutation, CreateFolderMutationVariables>;
+export const CreateNoteDocument = gql`
+    mutation CreateNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+    id
+    title
+    color
+    folderId
+    createdAt
+  }
+}
+    `;
+export type CreateNoteMutationFn = Apollo.MutationFunction<CreateNoteMutation, CreateNoteMutationVariables>;
 
-export type GetFoldersQueryVariables = Exact<{ [key: string]: never; }>;
+/**
+ * __useCreateNoteMutation__
+ *
+ * To run a mutation, you first call `useCreateNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNoteMutation, { data, loading, error }] = useCreateNoteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateNoteMutation(baseOptions?: Apollo.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, options);
+      }
+export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
+export type CreateNoteMutationResult = Apollo.MutationResult<CreateNoteMutation>;
+export type CreateNoteMutationOptions = Apollo.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
+export const GetFoldersDocument = gql`
+    query GetFolders {
+  folders {
+    id
+    name
+    color
+    sortOrder
+    createdAt
+    updatedAt
+    notes {
+      id
+      title
+      color
+    }
+  }
+}
+    `;
 
+/**
+ * __useGetFoldersQuery__
+ *
+ * To run a query within a React component, call `useGetFoldersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFoldersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFoldersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetFoldersQuery(baseOptions?: Apollo.QueryHookOptions<GetFoldersQuery, GetFoldersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFoldersQuery, GetFoldersQueryVariables>(GetFoldersDocument, options);
+      }
+export function useGetFoldersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFoldersQuery, GetFoldersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFoldersQuery, GetFoldersQueryVariables>(GetFoldersDocument, options);
+        }
+export function useGetFoldersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetFoldersQuery, GetFoldersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetFoldersQuery, GetFoldersQueryVariables>(GetFoldersDocument, options);
+        }
+export type GetFoldersQueryHookResult = ReturnType<typeof useGetFoldersQuery>;
+export type GetFoldersLazyQueryHookResult = ReturnType<typeof useGetFoldersLazyQuery>;
+export type GetFoldersSuspenseQueryHookResult = ReturnType<typeof useGetFoldersSuspenseQuery>;
+export type GetFoldersQueryResult = Apollo.QueryResult<GetFoldersQuery, GetFoldersQueryVariables>;
+export const GetNotesDocument = gql`
+    query GetNotes {
+  notes {
+    id
+    title
+    color
+    folderId
+    createdAt
+    updatedAt
+  }
+}
+    `;
 
-export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typename?: 'Folder', id: string, name: string, color?: string | null, notes?: Array<{ __typename?: 'Note', id: string, title: string, color?: string | null } | null> | null }> };
+/**
+ * __useGetNotesQuery__
+ *
+ * To run a query within a React component, call `useGetNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNotesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetNotesQuery(baseOptions?: Apollo.QueryHookOptions<GetNotesQuery, GetNotesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNotesQuery, GetNotesQueryVariables>(GetNotesDocument, options);
+      }
+export function useGetNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNotesQuery, GetNotesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNotesQuery, GetNotesQueryVariables>(GetNotesDocument, options);
+        }
+export function useGetNotesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetNotesQuery, GetNotesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetNotesQuery, GetNotesQueryVariables>(GetNotesDocument, options);
+        }
+export type GetNotesQueryHookResult = ReturnType<typeof useGetNotesQuery>;
+export type GetNotesLazyQueryHookResult = ReturnType<typeof useGetNotesLazyQuery>;
+export type GetNotesSuspenseQueryHookResult = ReturnType<typeof useGetNotesSuspenseQuery>;
+export type GetNotesQueryResult = Apollo.QueryResult<GetNotesQuery, GetNotesQueryVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    displayName
+    email
+  }
+}
+    `;
 
-export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export function useMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const SetFolderColorDocument = gql`
+    mutation SetFolderColor($id: String!, $color: String!) {
+  setFolderColor(id: $id, color: $color) {
+    id
+    name
+    color
+  }
+}
+    `;
+export type SetFolderColorMutationFn = Apollo.MutationFunction<SetFolderColorMutation, SetFolderColorMutationVariables>;
 
+/**
+ * __useSetFolderColorMutation__
+ *
+ * To run a mutation, you first call `useSetFolderColorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetFolderColorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setFolderColorMutation, { data, loading, error }] = useSetFolderColorMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      color: // value for 'color'
+ *   },
+ * });
+ */
+export function useSetFolderColorMutation(baseOptions?: Apollo.MutationHookOptions<SetFolderColorMutation, SetFolderColorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetFolderColorMutation, SetFolderColorMutationVariables>(SetFolderColorDocument, options);
+      }
+export type SetFolderColorMutationHookResult = ReturnType<typeof useSetFolderColorMutation>;
+export type SetFolderColorMutationResult = Apollo.MutationResult<SetFolderColorMutation>;
+export type SetFolderColorMutationOptions = Apollo.BaseMutationOptions<SetFolderColorMutation, SetFolderColorMutationVariables>;
+export const SetNoteColorDocument = gql`
+    mutation SetNoteColor($id: String!, $color: String!) {
+  setNoteColor(id: $id, color: $color) {
+    id
+    color
+  }
+}
+    `;
+export type SetNoteColorMutationFn = Apollo.MutationFunction<SetNoteColorMutation, SetNoteColorMutationVariables>;
 
-export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, folderId?: string | null, color?: string | null, updatedAt: any }> };
-
-export type CreateFolderMutationVariables = Exact<{
-  input: CreateFolderInput;
-}>;
-
-
-export type CreateFolderMutation = { __typename?: 'Mutation', createFolder: { __typename?: 'Folder', id: string, name: string, color?: string | null } };
-
-export type CreateNoteMutationVariables = Exact<{
-  input: CreateNoteInput;
-}>;
-
-
-export type CreateNoteMutation = { __typename?: 'Mutation', createNote: { __typename?: 'Note', id: string, title: string, color?: string | null } };
-
-
+/**
+ * __useSetNoteColorMutation__
+ *
+ * To run a mutation, you first call `useSetNoteColorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetNoteColorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setNoteColorMutation, { data, loading, error }] = useSetNoteColorMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      color: // value for 'color'
+ *   },
+ * });
+ */
+export function useSetNoteColorMutation(baseOptions?: Apollo.MutationHookOptions<SetNoteColorMutation, SetNoteColorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetNoteColorMutation, SetNoteColorMutationVariables>(SetNoteColorDocument, options);
+      }
+export type SetNoteColorMutationHookResult = ReturnType<typeof useSetNoteColorMutation>;
+export type SetNoteColorMutationResult = Apollo.MutationResult<SetNoteColorMutation>;
+export type SetNoteColorMutationOptions = Apollo.BaseMutationOptions<SetNoteColorMutation, SetNoteColorMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data) {
@@ -392,203 +681,3 @@ export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<Signu
 export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
 export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
 export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
-export const MeDocument = gql`
-    query Me {
-  me {
-    id
-    email
-    displayName
-  }
-}
-    `;
-
-/**
- * __useMeQuery__
- *
- * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMeQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-      }
-export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-        }
-export function useMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-        }
-export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
-export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
-export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
-export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export const GetFoldersDocument = gql`
-    query GetFolders {
-  folders {
-    id
-    name
-    color
-    notes {
-      id
-      title
-      color
-    }
-  }
-}
-    `;
-
-/**
- * __useGetFoldersQuery__
- *
- * To run a query within a React component, call `useGetFoldersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFoldersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetFoldersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetFoldersQuery(baseOptions?: Apollo.QueryHookOptions<GetFoldersQuery, GetFoldersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetFoldersQuery, GetFoldersQueryVariables>(GetFoldersDocument, options);
-      }
-export function useGetFoldersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFoldersQuery, GetFoldersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetFoldersQuery, GetFoldersQueryVariables>(GetFoldersDocument, options);
-        }
-export function useGetFoldersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetFoldersQuery, GetFoldersQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetFoldersQuery, GetFoldersQueryVariables>(GetFoldersDocument, options);
-        }
-export type GetFoldersQueryHookResult = ReturnType<typeof useGetFoldersQuery>;
-export type GetFoldersLazyQueryHookResult = ReturnType<typeof useGetFoldersLazyQuery>;
-export type GetFoldersSuspenseQueryHookResult = ReturnType<typeof useGetFoldersSuspenseQuery>;
-export type GetFoldersQueryResult = Apollo.QueryResult<GetFoldersQuery, GetFoldersQueryVariables>;
-export const GetNotesDocument = gql`
-    query GetNotes {
-  notes {
-    id
-    title
-    folderId
-    color
-    updatedAt
-  }
-}
-    `;
-
-/**
- * __useGetNotesQuery__
- *
- * To run a query within a React component, call `useGetNotesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetNotesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetNotesQuery(baseOptions?: Apollo.QueryHookOptions<GetNotesQuery, GetNotesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetNotesQuery, GetNotesQueryVariables>(GetNotesDocument, options);
-      }
-export function useGetNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNotesQuery, GetNotesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetNotesQuery, GetNotesQueryVariables>(GetNotesDocument, options);
-        }
-export function useGetNotesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetNotesQuery, GetNotesQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetNotesQuery, GetNotesQueryVariables>(GetNotesDocument, options);
-        }
-export type GetNotesQueryHookResult = ReturnType<typeof useGetNotesQuery>;
-export type GetNotesLazyQueryHookResult = ReturnType<typeof useGetNotesLazyQuery>;
-export type GetNotesSuspenseQueryHookResult = ReturnType<typeof useGetNotesSuspenseQuery>;
-export type GetNotesQueryResult = Apollo.QueryResult<GetNotesQuery, GetNotesQueryVariables>;
-export const CreateFolderDocument = gql`
-    mutation CreateFolder($input: CreateFolderInput!) {
-  createFolder(input: $input) {
-    id
-    name
-    color
-  }
-}
-    `;
-export type CreateFolderMutationFn = Apollo.MutationFunction<CreateFolderMutation, CreateFolderMutationVariables>;
-
-/**
- * __useCreateFolderMutation__
- *
- * To run a mutation, you first call `useCreateFolderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateFolderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createFolderMutation, { data, loading, error }] = useCreateFolderMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateFolderMutation(baseOptions?: Apollo.MutationHookOptions<CreateFolderMutation, CreateFolderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateFolderMutation, CreateFolderMutationVariables>(CreateFolderDocument, options);
-      }
-export type CreateFolderMutationHookResult = ReturnType<typeof useCreateFolderMutation>;
-export type CreateFolderMutationResult = Apollo.MutationResult<CreateFolderMutation>;
-export type CreateFolderMutationOptions = Apollo.BaseMutationOptions<CreateFolderMutation, CreateFolderMutationVariables>;
-export const CreateNoteDocument = gql`
-    mutation CreateNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-    id
-    title
-    color
-  }
-}
-    `;
-export type CreateNoteMutationFn = Apollo.MutationFunction<CreateNoteMutation, CreateNoteMutationVariables>;
-
-/**
- * __useCreateNoteMutation__
- *
- * To run a mutation, you first call `useCreateNoteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateNoteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createNoteMutation, { data, loading, error }] = useCreateNoteMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateNoteMutation(baseOptions?: Apollo.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, options);
-      }
-export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
-export type CreateNoteMutationResult = Apollo.MutationResult<CreateNoteMutation>;
-export type CreateNoteMutationOptions = Apollo.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;

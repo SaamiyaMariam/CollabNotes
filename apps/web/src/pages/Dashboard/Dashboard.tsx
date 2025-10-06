@@ -6,6 +6,8 @@ import {
   useGetNotesQuery,
   useCreateFolderMutation,
   useCreateNoteMutation,
+  useSetFolderColorMutation,
+  useSetNoteColorMutation,
 } from "../../generated/graphql";
 import FolderCard from "./FolderCard";
 import NoteCard from "./NoteCard";
@@ -18,6 +20,9 @@ import {
   FilePlus,
 } from "lucide-react";
 import CardForm from "../../components/CardForm";
+import ColorPaletteModal from "../../components/ColorPaletteModal";
+import Dropdown from "../../components/Dropdown";
+
 
 export default function Dashboard() {
   const token = localStorage.getItem("accessToken");
@@ -37,12 +42,59 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"workspace" | "all">("workspace");
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [showNoteModal, setShowNoteModal] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<{ id: string; type: "folder" | "note" }[]>([]);
+  const [showColorModal, setShowColorModal] = useState(false);
+  const [updateFolderColor] = useSetFolderColorMutation();
+  const [updateNoteColor] = useSetNoteColorMutation();
+  // const [deleteFolders] = useDeleteFoldersMutation();
+  // const [deleteNotes] = useDeleteNotesMutation();
 
   const username = meData?.me?.displayName ?? "User";
 
+  const toggleSelect = (id: string, type: "folder" | "note") => {
+    setSelectedItems((prev) =>
+      prev.some((item) => item.id === id)
+        ? prev.filter((item) => item.id !== id)
+        : [...prev, { id, type }]
+    );
+  };
+
+  const clearSelection = () => setSelectedItems([]);
+
+  const handleColorChange = async (color: string) => {
+    const folders = selectedItems.filter((i) => i.type === "folder");
+    const notes = selectedItems.filter((i) => i.type === "note");
+
+    await Promise.all([
+      ...folders.map((f) => updateFolderColor({ variables: { id: f.id, color } })),
+      ...notes.map((n) => updateNoteColor({ variables: { id: n.id, color } })),
+    ]);
+    console.log("Changing color to", color, "for", selectedItems);
+
+    setShowColorModal(false);
+    clearSelection();
+    await Promise.all([refetchFolders(), refetchNotes()]);
+  };
+
+
+  // const handleDeleteSelected = async () => {
+  //   const folders = selectedItems.filter((i) => i.type === "folder");
+  //   const notes = selectedItems.filter((i) => i.type === "note");
+
+  //   // Delete folders (their notes cascade in backend)
+  //   await Promise.all([
+  //     ...folders.map((f) => deleteFolders({ variables: { id: f.id } })),
+  //     ...notes.map((n) => deleteNotes({ variables: { id: n.id } })),
+  //   ]);
+
+  //   clearSelection();
+  //   refetchFolders();
+  //   refetchNotes();
+  // };
+
   return (
     // <div className="min-h-screen bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff] flex flex-col pt-2 px-2">
-  <div className="min-h-screen bg-gradient-to-b from-[#ffffff] to-[#f2ffff] flex flex-col pt-2 px-2"> 
+  <div className="min-h-screen bg-gradient-to-b from-[#ffffff] to-[#f2ffff] flex flex-col pt-16 px-2"> 
     {/* Navbar (always at top) */}
       <Navbar username={username} />
 
@@ -124,12 +176,53 @@ export default function Dashboard() {
             >
               <FilePlus size={18} />
             </button>
-            <button
-              className="p-3 rounded-full bg-white text-gray-700 shadow-md hover:shadow-lg hover:bg-gray-50 transition"
-              title="Options"
-            >
-              <MoreHorizontal size={18} />
-            </button>
+            <Dropdown
+              label={
+                <div
+                  className="p-3 rounded-full shadow-md bg-white text-gray-700 hover:shadow-lg hover:bg-gray-50 transition"
+                  title="Options"
+                >
+                  <MoreHorizontal size={18} />
+                </div>
+              }
+              options={[
+                {
+                  label: (
+                    <span
+                      className={`flex items-center gap-2 ${
+                        selectedItems.length === 0
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-pointer"
+                      }`}
+                    >
+                      Change Color
+                    </span>
+                  ),
+                  onClick: () => {
+                    if (selectedItems.length === 0) return;
+                    setShowColorModal(true);
+                  },
+                },
+                {
+                  label: (
+                    <span
+                      className={`flex items-center gap-2 ${
+                        selectedItems.length === 0
+                          ? "opacity-40 cursor-not-allowed"
+                          : "cursor-pointer text-red-100"
+                      }`}
+                    >
+                      Delete Selected
+                    </span>
+                  ),
+                  onClick: () => {
+                    if (selectedItems.length === 0) return;
+                    // handleDeleteSelected();
+                  },
+                },
+              ]}
+            />
+
           </div>
         </div>
 
@@ -144,6 +237,8 @@ export default function Dashboard() {
                     key={folder.id}
                     folder={folder}
                     onClick={() => navigate(`/folder/${folder.id}`)}
+                    selected={selectedItems.some((i) => i.id === folder.id)}
+                    onSelectToggle={() => toggleSelect(folder.id, "folder")}
                   />
                 ))
               ) : (
@@ -161,6 +256,8 @@ export default function Dashboard() {
                     key={note.id}
                     note={note}
                     onClick={() => navigate(`/note/${note.id}`)}
+                    selected={selectedItems.some((i) => i.id === note.id)}
+                    onSelectToggle={() => toggleSelect(note.id, "note")}
                   />
                 ))}
             </>
@@ -172,6 +269,8 @@ export default function Dashboard() {
                     key={note.id}
                     note={note}
                     onClick={() => navigate(`/note/${note.id}`)}
+                    selected={selectedItems.some((i) => i.id === note.id)}
+                    onSelectToggle={() => toggleSelect(note.id, "note")}
                   />
                 ))
               ) : (
@@ -219,6 +318,12 @@ export default function Dashboard() {
           />
         )}
         {/* -------------------------------------------------------- */}
+        {showColorModal && (
+          <ColorPaletteModal
+            onSelect={handleColorChange}
+            onClose={() => setShowColorModal(false)}
+          />
+        )}
       </main>
       </div>
     </div>

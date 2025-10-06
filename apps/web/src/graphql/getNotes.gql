@@ -1,0 +1,10 @@
+query GetNotes {
+  notes {
+    id
+    title
+    color
+    folderId
+    createdAt
+    updatedAt
+  }
+}

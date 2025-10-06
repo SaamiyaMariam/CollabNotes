@@ -1,0 +1,15 @@
+query GetFolders {
+  folders {
+    id
+    name
+    color
+    sortOrder
+    createdAt
+    updatedAt
+    notes {
+      id
+      title
+      color
+    }
+  }
+}

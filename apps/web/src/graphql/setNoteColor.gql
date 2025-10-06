@@ -1,0 +1,6 @@
+mutation SetNoteColor($id: String!, $color: String!) {
+  setNoteColor(id: $id, color: $color) {
+    id
+    color
+  }
+}

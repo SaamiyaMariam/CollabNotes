@@ -42,6 +42,7 @@ console.log("RAW input:", JSON.stringify(input, null, 2));
     return this.folderService.renameFolder(user.id, input.id, input.name);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Folder)
   async setFolderColor(
     @CurrentUser() user: User,
