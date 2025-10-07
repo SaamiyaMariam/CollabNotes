@@ -51,7 +51,7 @@ export class NoteResolver {
     @CurrentUser() user: User,
     @Args('input') input: RenameNoteInput,
   ) {
-    return this.noteService.renameNote(user.id, input.id, input.title);
+    return this.noteService.renameNote(user.id, input);
   }
 
   @Mutation(() => Note, { description: 'Move a note between folders (CREATOR or EDITOR allowed)' })
@@ -86,4 +86,10 @@ export class NoteResolver {
   ) {
     return this.noteService.reorderNotes(user.id, folderId, items);
   }
+
+  @Query(() => Note, { nullable: true })
+  async NoteByUrl(@Args('url') url: string, @CurrentUser() user: User) {
+    return this.noteService.findByUrl(user.id, url);
+  }
+
 }

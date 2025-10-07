@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateNoteInput } from './dto/create-note.input';
+import { RenameNoteInput } from './dto/rename-note.input';
 import { assertCanEdit, assertIsCreator } from '../common/authorization';
+import { slugify } from 'src/common/slugify';
 
 @Injectable()
 export class NoteService {
@@ -52,7 +54,29 @@ export class NoteService {
     return note;
   }
 
+  async findByUrl(userId: string, url: string) {
+    return this.prisma.folder.findFirst({
+      where: { ownerId: userId, url },
+    });
+  }
+
   async createNote(userId: string, input: CreateNoteInput) {
+    const baseSlug = slugify(input.title) || 'untitled';
+
+    // Check for duplicates within same folder (or global if folderId null)
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (
+      await this.prisma.note.findFirst({
+        where: {
+          ownerId: userId,
+          folderId: input.folderId ?? null,
+          url: slug,
+        },
+      })
+    ) {
+      slug = `${baseSlug}_${counter++}`;
     // when creating a note, also insert creator into collaborators table
     return this.prisma.note.create({
       data: {
@@ -60,29 +84,55 @@ export class NoteService {
         title: input.title,
         folderId: input.folderId ?? null,
         color: input.color ?? '#A8D1E7',
+        url: slug,
         collaborators: {
           create: {
             userId,
             role: 'CREATOR',
             addedBy: userId,
+
           },
         },
       },
       include: { collaborators: true },
     });
   }
+}
 
-  async renameNote(userId: string, id: string, title: string) {
+async renameNote(userId: string, input: RenameNoteInput) {
     const note = await this.prisma.note.findUnique({
-      where: { id },
+      where: { id: input.id },
       include: { collaborators: true },
     });
     if (!note) throw new NotFoundException('Note not found');
+
     assertCanEdit(userId, note);
+
+    // Generate new slug based on new title
+    const baseSlug = slugify(input.title) || 'untitled';
+    let slug = baseSlug;
+    let counter = 1;
+
+    // Avoid collisions within same folder (exclude current note)
+    while (
+      await this.prisma.note.findFirst({
+        where: {
+          ownerId: userId,
+          folderId: note.folderId ?? null,
+          url: slug,
+          NOT: { id: note.id },
+        },
+      })
+    ) {
+      slug = `${baseSlug}_${counter++}`;
+    }
 
     return this.prisma.note.update({
       where: { id: note.id },
-      data: { title },
+      data: {
+        title: input.title,
+        url: slug,
+      },
     });
   }
 
