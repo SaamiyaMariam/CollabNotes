@@ -72,6 +72,7 @@ export class NoteResolver {
     return this.noteService.setNoteColor(user.id, id, color);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Note, { description: 'Soft-delete a note (CREATOR only)' })
   async deleteNote(@CurrentUser() user: User, @Args('id') id: string) {
     return this.noteService.deleteNote(user.id, id);

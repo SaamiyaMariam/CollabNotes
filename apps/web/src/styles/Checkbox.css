@@ -14,6 +14,7 @@
   user-select: none;
   border-radius: 5px;
   box-shadow: 2px 2px 0px rgb(183, 183, 183);
+  z-index: 1;
 }
 
 /* custom box */
@@ -55,12 +56,18 @@
   transition: all 0.2s;
 }
 
-.pretty-checkbox-container .checkmark:after {
-  left: 0.45em;
-  top: 0.25em;
-  width: 0.25em;
-  height: 0.5em;
+.pretty-checkbox-container .checkmark::after {
+  content: "";
+  position: absolute;
+  width: 0.35em;
+  height: 0.7em;
   border: solid rgb(45, 29, 29);
-  border-width: 0 0.15em 0.15em 0;
+  border-width: 0 0.18em 0.18em 0;
   transform: rotate(45deg);
+  opacity: 0;
+  transition: all 0.2s ease;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+  translate: -50% -60%;
 }

@@ -13,6 +13,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: visible;
+  z-index: 0;
 }
 
 .folder-card:hover {

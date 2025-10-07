@@ -9,7 +9,7 @@ interface ColorPaletteModalProps {
 const colors = [
   { hex: "#FFBFC5", name: "Light Pink" },
   { hex: "#A8D1E7", name: "Baby Blue" },
-  { hex: "#EB8DB5", name: "Pink" },
+  { hex: "#f59ac1", name: "Pink" },
   { hex: "#D4A3C4", name: "Pink Purple" },
   { hex: "#bba3d4", name: "Lavender" },
 ];

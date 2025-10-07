@@ -48,10 +48,19 @@ export class FolderService {
 
   async deleteFolder(userId: string, id: string) {
     const folder = await this.assertIsOwner(userId, id);
-    return this.prisma.folder.update({
-      where: { id: folder.id },
-      data: { deletedAt: new Date() },
-    });
+
+    await this.prisma.$transaction([
+      this.prisma.note.updateMany({
+        where: { folderId: id },
+        data: { deletedAt: new Date() },
+      }),
+      this.prisma.folder.update({
+        where: { id: folder.id },
+        data: { deletedAt: new Date() },
+      }),
+    ]);
+
+    return folder;
   }
 
   async reorderFolders(userId: string, items: { id: string; sortOrder: number }[]) {
