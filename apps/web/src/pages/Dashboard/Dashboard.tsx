@@ -215,8 +215,8 @@ export default function Dashboard() {
                     <span
                       className={`flex items-center gap-2 ${
                         selectedItems.length === 0
-                          ? "opacity-40 cursor-not-allowed"
-                          : "cursor-pointer text-red-100"
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-pointer"
                       }`}
                     >
                       Delete Selected
