@@ -8,6 +8,8 @@ import {
   useCreateNoteMutation,
   useSetFolderColorMutation,
   useSetNoteColorMutation,
+  useDeleteFolderMutation,
+  useDeleteNoteMutation,
 } from "../../generated/graphql";
 import FolderCard from "./FolderCard";
 import NoteCard from "./NoteCard";
@@ -46,8 +48,8 @@ export default function Dashboard() {
   const [showColorModal, setShowColorModal] = useState(false);
   const [updateFolderColor] = useSetFolderColorMutation();
   const [updateNoteColor] = useSetNoteColorMutation();
-  // const [deleteFolders] = useDeleteFoldersMutation();
-  // const [deleteNotes] = useDeleteNotesMutation();
+  const [deleteFolder] = useDeleteFolderMutation();
+  const [deleteNote] = useDeleteNoteMutation();
 
   const username = meData?.me?.displayName ?? "User";
 
@@ -77,20 +79,25 @@ export default function Dashboard() {
   };
 
 
-  // const handleDeleteSelected = async () => {
-  //   const folders = selectedItems.filter((i) => i.type === "folder");
-  //   const notes = selectedItems.filter((i) => i.type === "note");
+  const handleDeleteSelected = async () => {
+    if (!window.confirm("Are you sure you want to delete the selected items?")) return;
 
-  //   // Delete folders (their notes cascade in backend)
-  //   await Promise.all([
-  //     ...folders.map((f) => deleteFolders({ variables: { id: f.id } })),
-  //     ...notes.map((n) => deleteNotes({ variables: { id: n.id } })),
-  //   ]);
+    const folders = selectedItems.filter((i) => i.type === "folder");
+    const notes = selectedItems.filter((i) => i.type === "note");
 
-  //   clearSelection();
-  //   refetchFolders();
-  //   refetchNotes();
-  // };
+    try {
+      // Perform deletions in parallel
+      await Promise.all([
+        ...folders.map((f) => deleteFolder({ variables: { id: f.id } })),
+        ...notes.map((n) => deleteNote({ variables: { id: n.id } })),
+      ]);
+
+      clearSelection();
+      await Promise.all([refetchFolders(), refetchNotes()]);
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+  };
 
   return (
     // <div className="min-h-screen bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff] flex flex-col pt-2 px-2">
@@ -217,7 +224,7 @@ export default function Dashboard() {
                   ),
                   onClick: () => {
                     if (selectedItems.length === 0) return;
-                    // handleDeleteSelected();
+                    handleDeleteSelected();
                   },
                 },
               ]}

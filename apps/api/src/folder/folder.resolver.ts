@@ -52,6 +52,7 @@ console.log("RAW input:", JSON.stringify(input, null, 2));
     return this.folderService.setFolderColor(user.id, id, color);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Folder)
   async deleteFolder(@CurrentUser() user: User, @Args('id') id: string) {
     return this.folderService.deleteFolder(user.id, id);

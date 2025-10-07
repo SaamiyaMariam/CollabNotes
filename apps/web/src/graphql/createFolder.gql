@@ -6,3 +6,15 @@ mutation CreateFolder($input: CreateFolderInput!) {
     createdAt
   }
 }
+
+mutation DeleteFolder($id: String!) {
+  deleteFolder(id: $id) {
+    id
+  }
+}
+
+mutation DeleteNote($id: String!) {
+  deleteNote(id: $id) {
+    id
+  }
+}
