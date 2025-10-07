@@ -60,44 +60,44 @@ export class NoteService {
     });
   }
 
-  async createNote(userId: string, input: CreateNoteInput) {
-    const baseSlug = slugify(input.title) || 'untitled';
+async createNote(userId: string, input: CreateNoteInput) {
+  const baseSlug = slugify(input.title) || 'untitled';
+  let slug = baseSlug;
+  let counter = 1;
 
-    // Check for duplicates within same folder (or global if folderId null)
-    let slug = baseSlug;
-    let counter = 1;
-
-    while (
-      await this.prisma.note.findFirst({
-        where: {
-          ownerId: userId,
-          folderId: input.folderId ?? null,
-          url: slug,
-        },
-      })
-    ) {
-      slug = `${baseSlug}_${counter++}`;
-    // when creating a note, also insert creator into collaborators table
-    return this.prisma.note.create({
-      data: {
+  // Keep incrementing until unique within same folder scope
+  while (
+    await this.prisma.note.findFirst({
+      where: {
         ownerId: userId,
-        title: input.title,
         folderId: input.folderId ?? null,
-        color: input.color ?? '#A8D1E7',
         url: slug,
-        collaborators: {
-          create: {
-            userId,
-            role: 'CREATOR',
-            addedBy: userId,
+      },
+    })
+  ) {
+    slug = `${baseSlug}_${counter++}`;
+  }
 
-          },
+  // ✅ create AFTER loop
+  return this.prisma.note.create({
+    data: {
+      ownerId: userId,
+      title: input.title,
+      folderId: input.folderId ?? null,
+      color: input.color ?? '#A8D1E7',
+      url: slug,
+      collaborators: {
+        create: {
+          userId,
+          role: 'CREATOR',
+          addedBy: userId,
         },
       },
-      include: { collaborators: true },
-    });
-  }
+    },
+    include: { collaborators: true },
+  });
 }
+
 
 async renameNote(userId: string, input: RenameNoteInput) {
     const note = await this.prisma.note.findUnique({

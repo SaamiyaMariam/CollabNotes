@@ -46,6 +46,7 @@ export class NoteResolver {
     return this.noteService.createNote(user.id, input);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Note, { description: 'Rename a note (CREATOR or EDITOR allowed)' })
   async renameNote(
     @CurrentUser() user: User,
