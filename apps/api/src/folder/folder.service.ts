@@ -1,6 +1,7 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateFolderInput } from './dto/create-folder.input';
+import { slugify } from '../common/slugify';
 
 @Injectable()
 export class FolderService {
@@ -18,23 +19,55 @@ export class FolderService {
     });
   }
 
+  async findByUrl(userId: string, url: string) {
+    return this.prisma.folder.findFirst({
+      where: { ownerId: userId, url },
+    });
+  }
+
   async createFolder(userId: string, input: CreateFolderInput) {
     console.log("createFolder user:", userId);
     console.log("createFolder input:", input);
+
+    const baseSlug = slugify(input.name);
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (await this.prisma.folder.findFirst({
+      where: { ownerId: userId, url: slug },
+    })) {
+      slug = `${baseSlug}_${counter++}`;
+    }
     return this.prisma.folder.create({
       data: {
         ownerId: userId,
         name: input.name,
         color: input.color ?? "#f2bdd6",
+        url: slug,
       },
     });
   }
 
   async renameFolder(userId: string, id: string, name: string) {
     const folder = await this.assertIsOwner(userId, id);
+
+    const baseSlug = slugify(name);
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (await this.prisma.folder.findFirst({
+      where: {
+        ownerId: userId,
+        url: slug,
+        id: { not: id },
+      },
+    })) {
+      slug = `${baseSlug}_${counter++}`;
+    }
+
     return this.prisma.folder.update({
       where: { id: folder.id },
-      data: { name },
+      data: { name, url: slug },
     });
   }
 

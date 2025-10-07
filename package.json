@@ -16,6 +16,7 @@
     "@graphql-codegen/typescript": "^5.0.1",
     "@graphql-codegen/typescript-operations": "^5.0.1",
     "@graphql-codegen/typescript-react-apollo": "^4.3.3",
+    "dotenv": "^17.2.3",
     "graphql": "^16.11.0",
     "react-router-dom": "^7.9.1"
   }

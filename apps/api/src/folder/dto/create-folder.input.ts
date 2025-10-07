@@ -12,4 +12,9 @@ export class CreateFolderInput {
   @IsOptional()
   @IsString()
   color?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  url?: string;
 }

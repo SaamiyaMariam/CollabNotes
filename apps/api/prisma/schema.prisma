@@ -38,7 +38,7 @@ model Folder {
   color     String?
   sortOrder Int       @default(0)
   deletedAt DateTime?
-
+  url         String    @unique
   parentId  String?
   parent    Folder?   @relation("FolderToFolder", fields: [parentId], references: [id])
   children  Folder[]  @relation("FolderToFolder")
@@ -65,7 +65,7 @@ model Note {
   color       String?
   sortOrder   Int       @default(0)
   deletedAt   DateTime?
-
+  url         String
   collaborators NoteCollaborator[]
 
   createdAt   DateTime @default(now())

@@ -16,6 +16,9 @@ export class Folder {
   sortOrder!: number;
 
   @Field({ nullable: true })
+  url!: string;
+
+  @Field({ nullable: true })
   deletedAt?: Date;
 
   @Field()

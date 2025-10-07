@@ -38,12 +38,14 @@ export enum CollaboratorRole {
 export type CreateFolderInput = {
   color?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateNoteInput = {
   color?: InputMaybe<Scalars['String']['input']>;
   folderId?: InputMaybe<Scalars['ID']['input']>;
   title: Scalars['String']['input'];
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Folder = {
@@ -56,6 +58,7 @@ export type Folder = {
   notes?: Maybe<Array<Maybe<Note>>>;
   sortOrder: Scalars['Float']['output'];
   updatedAt: Scalars['DateTime']['output'];
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 export type LoginInput = {
@@ -191,6 +194,7 @@ export type Note = {
   sortOrder: Scalars['Float']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 export type NoteCollaborator = {
@@ -206,6 +210,8 @@ export type NoteCollaborator = {
 
 export type Query = {
   __typename?: 'Query';
+  NoteByUrl?: Maybe<Note>;
+  folderByUrl?: Maybe<Folder>;
   folders: Array<Folder>;
   listCollaborators: Array<NoteCollaborator>;
   me?: Maybe<User>;
@@ -213,6 +219,16 @@ export type Query = {
   note: Note;
   /** Get notes in a folder (or loose notes if folderId is null) */
   notes: Array<Note>;
+};
+
+
+export type QueryNoteByUrlArgs = {
+  url: Scalars['String']['input'];
+};
+
+
+export type QueryFolderByUrlArgs = {
+  url: Scalars['String']['input'];
 };
 
 

@@ -17,4 +17,9 @@ export class CreateNoteInput {
   @IsOptional()
   @IsString()
   color?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  url?: string;
 }
