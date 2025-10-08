@@ -2,6 +2,7 @@ query GetFolders {
   folders {
     id
     name
+    url
     color
     sortOrder
     createdAt
@@ -9,6 +10,7 @@ query GetFolders {
     notes {
       id
       title
+      url
       color
     }
   }

@@ -54,11 +54,12 @@ export class NoteService {
     return note;
   }
 
-  async findByUrl(userId: string, url: string) {
-    return this.prisma.folder.findFirst({
-      where: { ownerId: userId, url },
+  async findByUrl(userId: string, url: string, folderId?: string | null) {
+    return this.prisma.note.findFirst({
+      where: { ownerId: userId, folderId: folderId ?? null, url },
     });
   }
+
 
 async createNote(userId: string, input: CreateNoteInput) {
   const baseSlug = slugify(input.title) || 'untitled';

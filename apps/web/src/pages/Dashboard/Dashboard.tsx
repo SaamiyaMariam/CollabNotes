@@ -243,7 +243,7 @@ export default function Dashboard() {
                   <FolderCard
                     key={folder.id}
                     folder={folder}
-                    onClick={() => navigate(`/folder/${folder.id}`)}
+                    onClick={() => navigate(`/${folder.url}`)}
                     selected={selectedItems.some((i) => i.id === folder.id)}
                     onSelectToggle={() => toggleSelect(folder.id, "folder")}
                   />
@@ -262,7 +262,7 @@ export default function Dashboard() {
                   <NoteCard
                     key={note.id}
                     note={note}
-                    onClick={() => navigate(`/note/${note.id}`)}
+                    onClick={() => navigate(`/note/${note.url}`)}
                     selected={selectedItems.some((i) => i.id === note.id)}
                     onSelectToggle={() => toggleSelect(note.id, "note")}
                   />
@@ -275,7 +275,7 @@ export default function Dashboard() {
                   <NoteCard
                     key={note.id}
                     note={note}
-                    onClick={() => navigate(`/note/${note.id}`)}
+                    onClick={() => navigate(`/note/${note.url}`)}
                     selected={selectedItems.some((i) => i.id === note.id)}
                     onSelectToggle={() => toggleSelect(note.id, "note")}
                   />

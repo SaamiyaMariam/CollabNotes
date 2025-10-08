@@ -2,6 +2,7 @@ query GetNotes {
   notes {
     id
     title
+    url
     color
     folderId
     createdAt
