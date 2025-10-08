@@ -49,6 +49,7 @@ model Folder {
   updatedAt DateTime  @updatedAt
 
   @@index([ownerId, deletedAt])
+   @@unique([ownerId, url])
 }
 
 model Note {
@@ -72,6 +73,7 @@ model Note {
   updatedAt   DateTime @updatedAt
 
   @@index([ownerId, folderId, deletedAt])
+   @@unique([ownerId, folderId, url])
 }
 
 model NoteCollaborator {

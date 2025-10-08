@@ -322,12 +322,12 @@ export type CreateNoteMutation = { __typename?: 'Mutation', createNote: { __type
 export type GetFoldersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typename?: 'Folder', id: string, name: string, color?: string | null, sortOrder: number, createdAt: any, updatedAt: any, notes?: Array<{ __typename?: 'Note', id: string, title: string, color?: string | null } | null> | null }> };
+export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typename?: 'Folder', id: string, name: string, url?: string | null, color?: string | null, sortOrder: number, createdAt: any, updatedAt: any, notes?: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null } | null> | null }> };
 
 export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, color?: string | null, folderId?: string | null, createdAt: any, updatedAt: any }> };
+export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, folderId?: string | null, createdAt: any, updatedAt: any }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -509,6 +509,7 @@ export const GetFoldersDocument = gql`
   folders {
     id
     name
+    url
     color
     sortOrder
     createdAt
@@ -516,6 +517,7 @@ export const GetFoldersDocument = gql`
     notes {
       id
       title
+      url
       color
     }
   }
@@ -558,6 +560,7 @@ export const GetNotesDocument = gql`
   notes {
     id
     title
+    url
     color
     folderId
     createdAt
