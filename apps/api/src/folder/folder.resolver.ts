@@ -67,6 +67,7 @@ console.log("RAW input:", JSON.stringify(input, null, 2));
     return this.folderService.reorderFolders(user.id, items);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => Folder, { nullable: true })
   async folderByUrl(@Args('url') url: string, @CurrentUser() user: User) {
     return this.folderService.findByUrl(user.id, url);

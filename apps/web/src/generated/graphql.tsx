@@ -319,6 +319,13 @@ export type CreateNoteMutationVariables = Exact<{
 
 export type CreateNoteMutation = { __typename?: 'Mutation', createNote: { __typename?: 'Note', id: string, title: string, color?: string | null, folderId?: string | null, createdAt: any } };
 
+export type GetFolderByUrlQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+
+export type GetFolderByUrlQuery = { __typename?: 'Query', folderByUrl?: { __typename?: 'Folder', id: string, name: string, url?: string | null, color?: string | null, createdAt: any, updatedAt: any } | null };
+
 export type GetFoldersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -328,6 +335,13 @@ export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, folderId?: string | null, createdAt: any, updatedAt: any }> };
+
+export type GetNotesByFolderIdQueryVariables = Exact<{
+  folderId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetNotesByFolderIdQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, folderId?: string | null, createdAt: any, updatedAt: any }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -504,6 +518,51 @@ export function useCreateNoteMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
 export type CreateNoteMutationResult = Apollo.MutationResult<CreateNoteMutation>;
 export type CreateNoteMutationOptions = Apollo.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
+export const GetFolderByUrlDocument = gql`
+    query GetFolderByUrl($url: String!) {
+  folderByUrl(url: $url) {
+    id
+    name
+    url
+    color
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetFolderByUrlQuery__
+ *
+ * To run a query within a React component, call `useGetFolderByUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFolderByUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFolderByUrlQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetFolderByUrlQuery(baseOptions: Apollo.QueryHookOptions<GetFolderByUrlQuery, GetFolderByUrlQueryVariables> & ({ variables: GetFolderByUrlQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFolderByUrlQuery, GetFolderByUrlQueryVariables>(GetFolderByUrlDocument, options);
+      }
+export function useGetFolderByUrlLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFolderByUrlQuery, GetFolderByUrlQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFolderByUrlQuery, GetFolderByUrlQueryVariables>(GetFolderByUrlDocument, options);
+        }
+export function useGetFolderByUrlSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetFolderByUrlQuery, GetFolderByUrlQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetFolderByUrlQuery, GetFolderByUrlQueryVariables>(GetFolderByUrlDocument, options);
+        }
+export type GetFolderByUrlQueryHookResult = ReturnType<typeof useGetFolderByUrlQuery>;
+export type GetFolderByUrlLazyQueryHookResult = ReturnType<typeof useGetFolderByUrlLazyQuery>;
+export type GetFolderByUrlSuspenseQueryHookResult = ReturnType<typeof useGetFolderByUrlSuspenseQuery>;
+export type GetFolderByUrlQueryResult = Apollo.QueryResult<GetFolderByUrlQuery, GetFolderByUrlQueryVariables>;
 export const GetFoldersDocument = gql`
     query GetFolders {
   folders {
@@ -600,6 +659,52 @@ export type GetNotesQueryHookResult = ReturnType<typeof useGetNotesQuery>;
 export type GetNotesLazyQueryHookResult = ReturnType<typeof useGetNotesLazyQuery>;
 export type GetNotesSuspenseQueryHookResult = ReturnType<typeof useGetNotesSuspenseQuery>;
 export type GetNotesQueryResult = Apollo.QueryResult<GetNotesQuery, GetNotesQueryVariables>;
+export const GetNotesByFolderIdDocument = gql`
+    query GetNotesByFolderId($folderId: String) {
+  notes(folderId: $folderId) {
+    id
+    title
+    url
+    color
+    folderId
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetNotesByFolderIdQuery__
+ *
+ * To run a query within a React component, call `useGetNotesByFolderIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNotesByFolderIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNotesByFolderIdQuery({
+ *   variables: {
+ *      folderId: // value for 'folderId'
+ *   },
+ * });
+ */
+export function useGetNotesByFolderIdQuery(baseOptions?: Apollo.QueryHookOptions<GetNotesByFolderIdQuery, GetNotesByFolderIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNotesByFolderIdQuery, GetNotesByFolderIdQueryVariables>(GetNotesByFolderIdDocument, options);
+      }
+export function useGetNotesByFolderIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNotesByFolderIdQuery, GetNotesByFolderIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNotesByFolderIdQuery, GetNotesByFolderIdQueryVariables>(GetNotesByFolderIdDocument, options);
+        }
+export function useGetNotesByFolderIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetNotesByFolderIdQuery, GetNotesByFolderIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetNotesByFolderIdQuery, GetNotesByFolderIdQueryVariables>(GetNotesByFolderIdDocument, options);
+        }
+export type GetNotesByFolderIdQueryHookResult = ReturnType<typeof useGetNotesByFolderIdQuery>;
+export type GetNotesByFolderIdLazyQueryHookResult = ReturnType<typeof useGetNotesByFolderIdLazyQuery>;
+export type GetNotesByFolderIdSuspenseQueryHookResult = ReturnType<typeof useGetNotesByFolderIdSuspenseQuery>;
+export type GetNotesByFolderIdQueryResult = Apollo.QueryResult<GetNotesByFolderIdQuery, GetNotesByFolderIdQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
