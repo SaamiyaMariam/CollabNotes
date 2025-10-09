@@ -15,7 +15,7 @@ import CardForm from "../../components/CardForm";
 import ColorPaletteModal from "../../components/ColorPaletteModal";
 import Dropdown from "../../components/Dropdown";
 import { Home, Trash2, MoreHorizontal, FilePlus } from "lucide-react";
-import tinycolor from "tinycolor2";
+// import tinycolor from "tinycolor2";
 
 export default function FolderView() {
   const token = localStorage.getItem("accessToken");
@@ -48,8 +48,8 @@ export default function FolderView() {
 
   const username = meData?.me?.displayName ?? "User";
   const folderName = folderData?.folderByUrl?.name ?? "Folder";
-  const base = tinycolor(folderData?.folderByUrl?.color ?? "#cfb5eb").lighten(10).toString() ;
-  const lighter = tinycolor(base).lighten(5).toString();
+//   const base = tinycolor(folderData?.folderByUrl?.color ?? "#cfb5eb").lighten(10).toString() ;
+//   const lighter = tinycolor(base).lighten(5).toString();
 
 
   const toggleSelect = (id: string) => {
@@ -108,15 +108,14 @@ export default function FolderView() {
         </aside>
 
         {/* Main */}
-        <main className="flex-1 mt-2 w-full rounded-2xl shadow-inner"
-          style={{
-            background: `linear-gradient(to bottom, , ${lighter})`,}}>
+        <main className="flex-1 mt-2 w-full rounded-2xl shadow-inner bg-gradient-to-b from-[#e5e7f0] to-[#f2ffff]"
+          >
           {/* Folder header */}
           <div className="px-2 pt-2">
             <div
               className="rounded-2xl p-6 text-white shadow-sm"
               style={{
-                background: `linear-gradient(135deg, ${folderData?.folderByUrl?.color}, ${folderData?.folderByUrl?.color})`,
+                background: "linear-gradient(135deg, #eb8db5, #f4c3c8)",
               }}
             >
               <h1 className="text-3xl font-bold font-poppins"
