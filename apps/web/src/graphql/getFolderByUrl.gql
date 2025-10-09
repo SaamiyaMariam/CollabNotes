@@ -1,0 +1,10 @@
+query GetFolderByUrl($url: String!) {
+  folderByUrl(url: $url) {
+    id
+    name
+    url
+    color
+    createdAt
+    updatedAt
+  }
+}

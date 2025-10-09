@@ -9,3 +9,16 @@ query GetNotes {
     updatedAt
   }
 }
+
+query GetNotesByFolderId($folderId: String) {
+  notes(folderId: $folderId) {
+    id
+    title
+    url
+    color
+    folderId
+    createdAt
+    updatedAt
+  }
+}
+
