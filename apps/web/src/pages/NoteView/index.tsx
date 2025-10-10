@@ -15,7 +15,9 @@ export default function NoteView() {
   const token = localStorage.getItem("accessToken");
   if (!token) return navigate("/auth");
 
-  const { data, refetch } = useGetNoteByUrlQuery({
+  console.log("🔹 Note URL param:", noteUrl);
+
+  const { data, loading, error, refetch } = useGetNoteByUrlQuery({
     variables: { url: noteUrl! },
     skip: !noteUrl,
   });
@@ -23,15 +25,22 @@ export default function NoteView() {
   const [updateContent] = useUpdateNoteContentMutation();
 
   const note = data?.NoteByUrl;
+
+  console.log("🟣 Note Query Data:", data);
+  console.log("🟠 Note Object:", note);
+  console.log("⚪ Query Loading:", loading, "Error:", error);
+
   const [title, setTitle] = useState(note?.title || "");
   const [content, setContent] = useState(note?.contentText || "");
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (note) {
-      console.log("Note data loaded:", note);
+      console.log("✅ Note data loaded:", note);
       setTitle(note.title);
       setContent(note.contentText || "");
+    } else {
+      console.warn("⚠️ Note is null (check backend or URL mismatch)");
     }
   }, [note]);
 
@@ -39,6 +48,7 @@ export default function NoteView() {
     const timeout = setTimeout(async () => {
       if (!note) return;
       setIsSaving(true);
+      console.log("💾 Auto-saving note:", note.id);
       await updateContent({
         variables: { id: note.id, contentText: content },
       });
