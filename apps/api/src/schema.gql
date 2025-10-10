@@ -141,7 +141,7 @@ input RenameFolderInput {
 }
 
 input RenameNoteInput {
-  id: ID!
+  id: ID
   title: String!
 }
 

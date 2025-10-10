@@ -17,7 +17,7 @@ export default function NoteView() {
 
   console.log("🔹 Note URL param:", noteUrl);
 
-  const { data, loading, error, refetch } = useGetNoteByUrlQuery({
+  const { data, refetch } = useGetNoteByUrlQuery({
     variables: { url: noteUrl! },
     skip: !noteUrl,
   });
@@ -26,9 +26,7 @@ export default function NoteView() {
 
   const note = data?.NoteByUrl;
 
-  console.log("🟣 Note Query Data:", data);
   console.log("🟠 Note Object:", note);
-  console.log("⚪ Query Loading:", loading, "Error:", error);
 
   const [title, setTitle] = useState(note?.title || "");
   const [content, setContent] = useState(note?.contentText || "");
@@ -58,6 +56,7 @@ export default function NoteView() {
   }, [content]);
 
   const handleRename = async () => {
+    console.log("🟣 Rename mutation payload:", note?.id, title);
     if (!note) return;
     await renameNote({ variables: { input: { id: note.id, title } } });
     refetch();

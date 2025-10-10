@@ -105,10 +105,12 @@ async createNote(userId: string, input: CreateNoteInput) {
 
 
 async renameNote(userId: string, input: RenameNoteInput) {
+    console.log("!! Note:", input);
     const note = await this.prisma.note.findUnique({
       where: { id: input.id },
       include: { collaborators: true },
     });
+    
     if (!note) throw new NotFoundException('Note not found');
 
     assertCanEdit(userId, note);

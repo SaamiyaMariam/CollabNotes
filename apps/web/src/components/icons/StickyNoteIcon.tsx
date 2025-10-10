@@ -1,4 +1,4 @@
-export default function StickyNoteIcon({ size = 18 }: { size?: number }) {
+export default function StickyNoteIcon({ size = 20 }: { size?: number }) {
   return (
     <svg
       className="text-yellow-400 dark:text-yellow-600"
