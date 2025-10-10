@@ -1,0 +1,13 @@
+query GetNoteByUrl($url: String!) {
+  NoteByUrl(url: $url) {
+    id
+    title
+    url
+    color
+    contentText
+    contentJson
+    folderId
+    createdAt
+    updatedAt
+  }
+}

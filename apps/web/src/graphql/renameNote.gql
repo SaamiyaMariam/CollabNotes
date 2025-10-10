@@ -1,0 +1,7 @@
+mutation RenameNote($input: RenameNoteInput!) {
+  renameNote(input: $input) {
+    id
+    title
+    url
+  }
+}
