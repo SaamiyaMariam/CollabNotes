@@ -15,8 +15,6 @@ export default function NoteView() {
   const token = localStorage.getItem("accessToken");
   if (!token) return navigate("/auth");
 
-  console.log("🔹 Note URL param:", noteUrl);
-
   const { data, refetch } = useGetNoteByUrlQuery({
     variables: { url: noteUrl! },
     skip: !noteUrl,
@@ -25,28 +23,23 @@ export default function NoteView() {
   const [updateContent] = useUpdateNoteContentMutation();
 
   const note = data?.NoteByUrl;
-
-  console.log("🟠 Note Object:", note);
-
   const [title, setTitle] = useState(note?.title || "");
   const [content, setContent] = useState(note?.contentText || "");
   const [isSaving, setIsSaving] = useState(false);
 
+  // load note data when fetched
   useEffect(() => {
     if (note) {
-      console.log("✅ Note data loaded:", note);
       setTitle(note.title);
       setContent(note.contentText || "");
-    } else {
-      console.warn("⚠️ Note is null (check backend or URL mismatch)");
     }
   }, [note]);
 
+  // autosave content
   useEffect(() => {
     const timeout = setTimeout(async () => {
       if (!note) return;
       setIsSaving(true);
-      console.log("💾 Auto-saving note:", note.id);
       await updateContent({
         variables: { id: note.id, contentText: content },
       });
@@ -55,15 +48,18 @@ export default function NoteView() {
     return () => clearTimeout(timeout);
   }, [content]);
 
+  // rename on blur
   const handleRename = async () => {
-    console.log("🟣 Rename mutation payload:", note?.id, title);
     if (!note) return;
-    await renameNote({ variables: { input: { id: note.id, title } } });
-    refetch();
+    const trimmed = title.trim();
+    if (trimmed && trimmed !== note.title) {
+      await renameNote({ variables: { input: { id: note.id, title: trimmed } } });
+      refetch();
+    }
   };
 
   const base = note?.color ?? "#c5d5f0";
-  const lighter = tinycolor(base).lighten(20).toString();
+  const lighter = tinycolor(base).lighten(5).toString();
 
   return (
     <div className="min-h-screen flex flex-col pt-16 bg-gradient-to-b from-white to-[#f2ffff]">
@@ -79,14 +75,16 @@ export default function NoteView() {
           }}
         >
           <div className="max-w-3xl mx-auto bg-white/70 p-6 rounded-2xl shadow-sm">
-            <h1 className="text-3xl font-bold mb-2">{title || "Untitled Note"}</h1>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+            {/* Inline editable title */}
+            <h1
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) => setTitle((e.target as HTMLElement).innerText)}
               onBlur={handleRename}
-              className="w-full text-lg font-medium bg-transparent outline-none border-b border-gray-200 pb-1 text-gray-600"
-              placeholder="Edit title..."
-            />
+              className="text-3xl font-bold mb-2 outline-none border-b border-transparent focus:border-gray-300 text-gray-800"
+            >
+              {title || "Untitled Note"}
+            </h1>
 
             <p className="text-gray-400 text-sm mt-1">
               {isSaving ? "Saving..." : "All changes saved"}
