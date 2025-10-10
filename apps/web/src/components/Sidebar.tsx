@@ -5,6 +5,8 @@ import {
   useGetFoldersQuery,
   useGetNotesByFolderIdLazyQuery,
 } from "../generated/graphql";
+import StickyNoteIcon from "./icons/StickyNoteIcon";
+import FolderIcon from "./icons/FolderIcon";
 
 interface SidebarProps {
   currentNoteId?: string;
@@ -16,91 +18,112 @@ export default function Sidebar({ currentNoteId, folderId }: SidebarProps) {
   const { data: foldersData } = useGetFoldersQuery();
   const [expanded, setExpanded] = useState(true);
 
-  // Use LazyQuery for folder notes
   const [getNotesByFolderId] = useGetNotesByFolderIdLazyQuery();
-  const [folderNotes, setFolderNotes] = useState<Record<string, any[]>>({});
+  const [notes, setNotes] = useState<any[]>([]);
 
-  // Fetch notes for all folders once they load
+  const folder = foldersData?.folders?.find((f) => f.id === folderId);
+
+  console.log("📁 All Folders:", foldersData);
+  console.log("🟢 Selected Folder ID:", folderId);
+  console.log("🟣 Matched Folder Object:", folder);
+
   useEffect(() => {
-    const fetchAllNotes = async () => {
-      if (!foldersData?.folders) return;
-      const results: Record<string, any[]> = {};
-
-      for (const f of foldersData.folders) {
-        const { data } = await getNotesByFolderId({
-          variables: { folderId: f.id },
-        });
-        results[f.id] = data?.notes ?? [];
+    const fetchNotes = async () => {
+      if (!folderId) {
+        console.warn("⚠️ No folderId provided to Sidebar");
+        return;
       }
-
-      setFolderNotes(results);
+      console.log("📨 Fetching notes for folder:", folderId);
+      const { data } = await getNotesByFolderId({ variables: { folderId } });
+      console.log("🧾 Notes fetched:", data);
+      setNotes(data?.notes ?? []);
     };
-
-    fetchAllNotes();
-  }, [foldersData]);
+    fetchNotes();
+  }, [folderId, getNotesByFolderId]);
 
   return (
     <aside
-      className={`relative transition-all duration-300 border-r border-white/60 bg-white/70 backdrop-blur-sm rounded-r-3xl mt-[8px]
-      ${expanded ? "w-64 px-4" : "w-16 items-center gap-5"} flex flex-col justify-between py-6`}
+      className={`relative flex flex-col justify-between py-6 border-r border-white/60 bg-white/70 backdrop-blur-sm rounded-r-3xl mt-[8px] transition-all duration-300 ${
+        expanded ? "w-64 px-4" : "w-16 items-center gap-5"
+      }`}
     >
-      {/* --- Top Navigation --- */}
       <div className="flex flex-col gap-3">
-        <button
-          onClick={() => navigate("/app")}
-          className={`flex items-center gap-2 p-2 rounded-xl transition ${
+        {/* Navigation */}
+        <button onClick={() => navigate("/app")}
+        className={`flex items-center gap-2 p-2 rounded-xl text-gray-600 hover:text-[#eb8db5] hover:bg-white transition ${
             expanded ? "justify-start" : "justify-center"
-          } text-gray-600 hover:text-[#eb8db5] hover:bg-white`}
-        >
+        }`}>
           <Home size={20} />
           {expanded && <span>Dashboard</span>}
         </button>
 
-        <button
-          onClick={() => navigate("/trash")}
-          className={`flex items-center gap-2 p-2 rounded-xl transition ${
+        <button onClick={() => navigate("/trash")} 
+        className={`flex items-center gap-2 p-2 rounded-xl text-gray-600 hover:text-[#eb8db5] hover:bg-white transition ${
             expanded ? "justify-start" : "justify-center"
-          } text-gray-600 hover:text-[#eb8db5] hover:bg-white`}
-        >
-          <Trash2 size={20} />
+        }`}>
+        <Trash2 size={20} />
           {expanded && <span>Recycle Bin</span>}
         </button>
 
-        {/* --- Folder Section --- */}
-        {foldersData?.folders?.map((folder) => (
-          <div key={folder.id} className="mt-3">
-            {expanded && (
-              <h3
-                className="text-sm font-semibold px-2 py-1 rounded-lg"
-                style={{
-                  backgroundColor: `${folder.color}30`,
-                  color: "#4b5563",
-                }}
-              >
-                {folder.name}
-              </h3>
-            )}
-
-            <div className="mt-1 flex flex-col">
-              {folderNotes[folder.id]?.map((note) => (
+        {/* Folder and notes */}
+        {folder && (
+          <div className="mt-2 flex flex-col">
+            {expanded ? (
                 <button
-                  key={note.id}
-                  onClick={() => navigate(`/note/${note.url}`)}
-                  className={`text-left px-3 py-2 rounded-lg text-sm font-medium transition ${
-                    note.id === currentNoteId
-                      ? "bg-[#a8d1e7] text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                    className="text-left text-sm font-semibold px-3 py-3 rounded-lg w-full transition"
+                    onClick={() => navigate(`/${folder.url}`)}
+                    style={{
+                    backgroundColor: `${folder.color}30`,
+                    color: "#4b5563",
+                    }}
                 >
-                  {expanded ? note.title : "📝"}
+                    {folder.name}
                 </button>
-              ))}
+                ) : (
+                <button
+                    onClick={() => navigate(`/${folder.url}`)}
+                    className="px-8 rounded-xl hover:bg-white/80 transition"
+                    title={folder.name} // Tooltip for collapsed state
+                >
+                    <FolderIcon/>
+                </button>
+                )}
+            <div className="mt-2 flex flex-col">
+                {notes.map((note) => {
+                const baseColor = note.color || "#a8d1e7"; // fallback color
+                return (
+                    <button
+                    key={note.id}
+                    onClick={() => navigate(`/note/${note.url}`)}
+                    className={`text-left px-8 py-2 mt-2 rounded-lg text-sm font-medium transition ${
+                        note.id === currentNoteId
+                        ? "text-white"
+                        : "text-gray-700"
+                    }`}
+                    style={{
+                        backgroundColor:
+                        note.id === currentNoteId ? baseColor : "transparent",
+                    }}
+                    onMouseEnter={(e) => {
+                        if (note.id !== currentNoteId)
+                        (e.currentTarget.style.backgroundColor = `${baseColor}33`); // light hover (20% opacity)
+                    }}
+                    onMouseLeave={(e) => {
+                        if (note.id !== currentNoteId)
+                        (e.currentTarget.style.backgroundColor = "transparent");
+                    }}
+                    >
+                    {expanded ? note.title : (
+                        <StickyNoteIcon/>
+                        )}
+                    </button>
+                );
+                })}
             </div>
           </div>
-        ))}
+        )}
       </div>
 
-      {/* --- Bottom Collapse Button --- */}
       <button
         onClick={() => setExpanded(!expanded)}
         className="self-center mt-4 bg-white rounded-full shadow-sm p-1 hover:bg-gray-100 transition"
