@@ -33,6 +33,12 @@ export class NoteResolver {
     return this.noteService.findOne(user.id, id);
   }
 
+  @UseGuards(GqlAuthGuard) 
+  @Query(() => Note, { nullable: true })
+  async NoteByUrl(@Args('url') url: string, @CurrentUser() user: User) {
+    return this.noteService.findByUrl(user.id, url);
+  }
+
   // ───────────────────────────────────────────────
   // Mutations
   // ───────────────────────────────────────────────
@@ -88,9 +94,15 @@ export class NoteResolver {
     return this.noteService.reorderNotes(user.id, folderId, items);
   }
 
-  @Query(() => Note, { nullable: true })
-  async NoteByUrl(@Args('url') url: string, @CurrentUser() user: User) {
-    return this.noteService.findByUrl(user.id, url);
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Note, { description: 'Update note content (CREATOR or EDITOR allowed)' })
+  async updateNoteContent(
+    @CurrentUser() user: User,
+    @Args('id') id: string,
+    @Args('contentText', { nullable: true }) contentText?: string,
+    @Args('contentJson', { nullable: true }) contentJson?: string,
+  ) {
+    return this.noteService.updateNoteContent(user.id, id, contentText, contentJson);
   }
 
 }

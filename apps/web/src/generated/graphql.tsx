@@ -94,6 +94,8 @@ export type Mutation = {
   setFolderColor: Folder;
   setNoteColor: Note;
   signup: AuthResponse;
+  /** Update note content (CREATOR or EDITOR allowed) */
+  updateNoteContent: Note;
 };
 
 
@@ -178,6 +180,13 @@ export type MutationSetNoteColorArgs = {
 
 export type MutationSignupArgs = {
   data: SignupInput;
+};
+
+
+export type MutationUpdateNoteContentArgs = {
+  contentJson?: InputMaybe<Scalars['String']['input']>;
+  contentText?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
 };
 
 export type Note = {
@@ -331,6 +340,13 @@ export type GetFoldersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typename?: 'Folder', id: string, name: string, url?: string | null, color?: string | null, sortOrder: number, createdAt: any, updatedAt: any, notes?: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null } | null> | null }> };
 
+export type GetNoteByUrlQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+
+export type GetNoteByUrlQuery = { __typename?: 'Query', NoteByUrl?: { __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, contentText?: string | null, contentJson?: string | null, folderId?: string | null, createdAt: any, updatedAt: any } | null };
+
 export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -348,6 +364,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, displayName: string, email: string } | null };
 
+export type RenameNoteMutationVariables = Exact<{
+  input: RenameNoteInput;
+}>;
+
+
+export type RenameNoteMutation = { __typename?: 'Mutation', renameNote: { __typename?: 'Note', id: string, title: string, url?: string | null } };
+
 export type SetFolderColorMutationVariables = Exact<{
   id: Scalars['String']['input'];
   color: Scalars['String']['input'];
@@ -363,6 +386,15 @@ export type SetNoteColorMutationVariables = Exact<{
 
 
 export type SetNoteColorMutation = { __typename?: 'Mutation', setNoteColor: { __typename?: 'Note', id: string, color?: string | null } };
+
+export type UpdateNoteContentMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  contentText?: InputMaybe<Scalars['String']['input']>;
+  contentJson?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UpdateNoteContentMutation = { __typename?: 'Mutation', updateNoteContent: { __typename?: 'Note', id: string, contentText?: string | null, contentJson?: string | null, updatedAt: any } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -614,6 +646,54 @@ export type GetFoldersQueryHookResult = ReturnType<typeof useGetFoldersQuery>;
 export type GetFoldersLazyQueryHookResult = ReturnType<typeof useGetFoldersLazyQuery>;
 export type GetFoldersSuspenseQueryHookResult = ReturnType<typeof useGetFoldersSuspenseQuery>;
 export type GetFoldersQueryResult = Apollo.QueryResult<GetFoldersQuery, GetFoldersQueryVariables>;
+export const GetNoteByUrlDocument = gql`
+    query GetNoteByUrl($url: String!) {
+  NoteByUrl(url: $url) {
+    id
+    title
+    url
+    color
+    contentText
+    contentJson
+    folderId
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetNoteByUrlQuery__
+ *
+ * To run a query within a React component, call `useGetNoteByUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNoteByUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNoteByUrlQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetNoteByUrlQuery(baseOptions: Apollo.QueryHookOptions<GetNoteByUrlQuery, GetNoteByUrlQueryVariables> & ({ variables: GetNoteByUrlQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNoteByUrlQuery, GetNoteByUrlQueryVariables>(GetNoteByUrlDocument, options);
+      }
+export function useGetNoteByUrlLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNoteByUrlQuery, GetNoteByUrlQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNoteByUrlQuery, GetNoteByUrlQueryVariables>(GetNoteByUrlDocument, options);
+        }
+export function useGetNoteByUrlSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetNoteByUrlQuery, GetNoteByUrlQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetNoteByUrlQuery, GetNoteByUrlQueryVariables>(GetNoteByUrlDocument, options);
+        }
+export type GetNoteByUrlQueryHookResult = ReturnType<typeof useGetNoteByUrlQuery>;
+export type GetNoteByUrlLazyQueryHookResult = ReturnType<typeof useGetNoteByUrlLazyQuery>;
+export type GetNoteByUrlSuspenseQueryHookResult = ReturnType<typeof useGetNoteByUrlSuspenseQuery>;
+export type GetNoteByUrlQueryResult = Apollo.QueryResult<GetNoteByUrlQuery, GetNoteByUrlQueryVariables>;
 export const GetNotesDocument = gql`
     query GetNotes {
   notes {
@@ -746,6 +826,41 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const RenameNoteDocument = gql`
+    mutation RenameNote($input: RenameNoteInput!) {
+  renameNote(input: $input) {
+    id
+    title
+    url
+  }
+}
+    `;
+export type RenameNoteMutationFn = Apollo.MutationFunction<RenameNoteMutation, RenameNoteMutationVariables>;
+
+/**
+ * __useRenameNoteMutation__
+ *
+ * To run a mutation, you first call `useRenameNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRenameNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [renameNoteMutation, { data, loading, error }] = useRenameNoteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRenameNoteMutation(baseOptions?: Apollo.MutationHookOptions<RenameNoteMutation, RenameNoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RenameNoteMutation, RenameNoteMutationVariables>(RenameNoteDocument, options);
+      }
+export type RenameNoteMutationHookResult = ReturnType<typeof useRenameNoteMutation>;
+export type RenameNoteMutationResult = Apollo.MutationResult<RenameNoteMutation>;
+export type RenameNoteMutationOptions = Apollo.BaseMutationOptions<RenameNoteMutation, RenameNoteMutationVariables>;
 export const SetFolderColorDocument = gql`
     mutation SetFolderColor($id: String!, $color: String!) {
   setFolderColor(id: $id, color: $color) {
@@ -817,6 +932,44 @@ export function useSetNoteColorMutation(baseOptions?: Apollo.MutationHookOptions
 export type SetNoteColorMutationHookResult = ReturnType<typeof useSetNoteColorMutation>;
 export type SetNoteColorMutationResult = Apollo.MutationResult<SetNoteColorMutation>;
 export type SetNoteColorMutationOptions = Apollo.BaseMutationOptions<SetNoteColorMutation, SetNoteColorMutationVariables>;
+export const UpdateNoteContentDocument = gql`
+    mutation UpdateNoteContent($id: String!, $contentText: String, $contentJson: String) {
+  updateNoteContent(id: $id, contentText: $contentText, contentJson: $contentJson) {
+    id
+    contentText
+    contentJson
+    updatedAt
+  }
+}
+    `;
+export type UpdateNoteContentMutationFn = Apollo.MutationFunction<UpdateNoteContentMutation, UpdateNoteContentMutationVariables>;
+
+/**
+ * __useUpdateNoteContentMutation__
+ *
+ * To run a mutation, you first call `useUpdateNoteContentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNoteContentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNoteContentMutation, { data, loading, error }] = useUpdateNoteContentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      contentText: // value for 'contentText'
+ *      contentJson: // value for 'contentJson'
+ *   },
+ * });
+ */
+export function useUpdateNoteContentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNoteContentMutation, UpdateNoteContentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateNoteContentMutation, UpdateNoteContentMutationVariables>(UpdateNoteContentDocument, options);
+      }
+export type UpdateNoteContentMutationHookResult = ReturnType<typeof useUpdateNoteContentMutation>;
+export type UpdateNoteContentMutationResult = Apollo.MutationResult<UpdateNoteContentMutation>;
+export type UpdateNoteContentMutationOptions = Apollo.BaseMutationOptions<UpdateNoteContentMutation, UpdateNoteContentMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data) {

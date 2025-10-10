@@ -4,6 +4,7 @@ import { CreateNoteInput } from './dto/create-note.input';
 import { RenameNoteInput } from './dto/rename-note.input';
 import { assertCanEdit, assertIsCreator } from '../common/authorization';
 import { slugify } from 'src/common/slugify';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class NoteService {
@@ -79,7 +80,7 @@ async createNote(userId: string, input: CreateNoteInput) {
     slug = `${baseSlug}_${counter++}`;
   }
 
-  // ✅ create AFTER loop
+  // create AFTER loop
   return this.prisma.note.create({
     data: {
       ownerId: userId,
@@ -200,6 +201,26 @@ async renameNote(userId: string, input: RenameNoteInput) {
 
     await this.prisma.$transaction(ops);
     return this.findNotes(userId, folderId ?? undefined);
+  }
+
+  async updateNoteContent(userId: string, id: string, contentText?: string, contentJson?: string) {
+    const note = await this.prisma.note.findUnique({
+      where: { id },
+      include: { collaborators: true },
+    });
+    if (!note) throw new NotFoundException('Note not found');
+    assertCanEdit(userId, note);
+
+    return this.prisma.note.update({
+      where: { id: note.id },
+      data: {
+        contentText: contentText ?? note.contentText,
+        contentJson:
+          contentJson !== undefined
+            ? (contentJson as unknown as Prisma.InputJsonValue)
+            : (note.contentJson as unknown as Prisma.InputJsonValue),
+      },
+    });
   }
 
 }

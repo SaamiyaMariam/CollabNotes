@@ -85,6 +85,9 @@ type Mutation {
   setFolderColor(color: String!, id: String!): Folder!
   setNoteColor(color: String!, id: String!): Note!
   signup(data: SignupInput!): AuthResponse!
+
+  """Update note content (CREATOR or EDITOR allowed)"""
+  updateNoteContent(contentJson: String, contentText: String, id: String!): Note!
 }
 
 type Note {
