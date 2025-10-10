@@ -126,7 +126,7 @@ export default function Sidebar({ currentNoteId, folderId }: SidebarProps) {
 
       <button
         onClick={() => setExpanded(!expanded)}
-        className="self-center mt-4 bg-white rounded-full shadow-sm p-1 hover:bg-gray-100 transition"
+        className="self-right mt-4 bg-white rounded-full shadow-sm p-1 hover:bg-gray-100 transition"
       >
         {expanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
       </button>
