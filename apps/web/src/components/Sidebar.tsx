@@ -43,9 +43,9 @@ export default function Sidebar({ currentNoteId, folderId }: SidebarProps) {
 
   return (
     <aside
-      className={`relative flex flex-col justify-between py-6 border-r border-white/60 bg-white/70 backdrop-blur-sm rounded-r-3xl mt-[8px] transition-all duration-300 ${
+    className={`relative flex flex-col justify-between py-6 border-r border-white/60 bg-white/70 backdrop-blur-sm rounded-r-3xl mt-[8px] overflow-hidden transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
         expanded ? "w-64 px-4" : "w-16 items-center gap-5"
-      }`}
+    }`}
     >
       <div className="flex flex-col gap-3">
         {/* Navigation */}
@@ -54,15 +54,29 @@ export default function Sidebar({ currentNoteId, folderId }: SidebarProps) {
             expanded ? "justify-start" : "justify-center"
         }`}>
           <Home size={20} />
-          {expanded && <span>Dashboard</span>}
+          {expanded && <span
+            className={`block whitespace-nowrap overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            expanded
+                ? "opacity-100 w-auto delay-200 ml-2"
+                : "opacity-0 w-0 ml-0"
+            }`}
+        >
+    Dashboard</span>}
         </button>
 
         <button onClick={() => navigate("/trash")} 
-        className={`flex items-center gap-2 p-2 rounded-xl text-gray-600 hover:text-[#eb8db5] hover:bg-white transition ${
-            expanded ? "justify-start" : "justify-center"
+        className={`flex items-center gap-2 p-2 rounded-xl text-gray-600 hover:text-[#eb8db5] hover:bg-white transition duration-300 overflow-hidden whitespace-nowrap ${
+            expanded ? "justify-start opacity-100 delay-300" : "justify-center"
         }`}>
         <Trash2 size={20} />
-          {expanded && <span>Recycle Bin</span>}
+          {expanded && <span
+            className={`block whitespace-nowrap overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            expanded
+                ? "opacity-100 w-auto delay-200 ml-2"
+                : "opacity-0 w-0 ml-0"
+            }`}
+        >
+    Recycle Bin</span>}
         </button>
 
         {/* Folder and notes */}
