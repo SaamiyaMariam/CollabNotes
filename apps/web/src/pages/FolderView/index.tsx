@@ -7,6 +7,7 @@ import {
   useCreateNoteMutation,
   useSetNoteColorMutation,
   useDeleteNoteMutation,
+  GetFoldersDocument,
 } from "../../generated/graphql";
 
 import Navbar from "../../components/Navbar";
@@ -78,7 +79,10 @@ export default function FolderView() {
       return;
     try {
       await Promise.all(
-        selectedNotes.map((id) => deleteNote({ variables: { id } }))
+        selectedNotes.map((id) => deleteNote({ variables: { id },
+          refetchQueries: [{ query: GetFoldersDocument }],
+        })
+      )
       );
       clearSelection();
       await refetchNotes();
@@ -216,6 +220,7 @@ export default function FolderView() {
                 console.log("Creating note with title:", val);
                 await createNote({
                   variables: { input: { title: val, folderId } },
+                  refetchQueries: [{ query: GetFoldersDocument }],
                 });
                 setShowNoteModal(false);
                 refetchNotes();
