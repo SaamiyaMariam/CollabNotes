@@ -1,3 +1,4 @@
+// apps/web/src/components/TipTapEditor.tsx
 import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -41,13 +42,15 @@ export default function TiptapEditor({ content, onChange }: TiptapEditorProps) {
     },
   });
 
-  // Reload content if note changes
+  // Reload content when the note changes
   useEffect(() => {
-    if (editor && content) editor.commands.setContent(content);
-  }, [content]);
+    if (editor && content) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   return (
-    <div className="bg-white/80 rounded-xl p-4 shadow-sm">
+    <div>
       <EditorContent editor={editor} />
     </div>
   );

@@ -19,37 +19,26 @@ export default function NoteView() {
   const { data, refetch } = useGetNoteByUrlQuery({
     variables: { url: noteUrl! },
     skip: !noteUrl,
+    fetchPolicy: "network-only", // always fetch fresh note data
   });
+
   const [renameNote] = useRenameNoteMutation();
   const [updateContent] = useUpdateNoteContentMutation();
 
   const note = data?.NoteByUrl;
   const [title, setTitle] = useState(note?.title || "");
-  const [content, setContent] = useState(note?.contentText || "");
-  const [isSaving, setIsSaving] = useState(false);
-  const [contentJson, setContentJson] = useState(note?.contentJson || null);
+  const [contentJson, setContentJson] = useState(note?.contentJson ? JSON.parse(note.contentJson) : null);
   const [contentText, setContentText] = useState(note?.contentText || "");
+  const [isSaving, setIsSaving] = useState(false);
 
-  // load note data when fetched
+  // update local state when note changes (switching between notes)
   useEffect(() => {
     if (note) {
       setTitle(note.title);
-      setContent(note.contentText || "");
+      setContentJson(note.contentJson ? JSON.parse(note.contentJson) : null);
+      setContentText(note.contentText || "");
     }
   }, [note]);
-
-  // autosave content
-  useEffect(() => {
-    const timeout = setTimeout(async () => {
-      if (!note) return;
-      setIsSaving(true);
-      await updateContent({
-        variables: { id: note.id, contentText: content },
-      });
-      setIsSaving(false);
-    }, 800);
-    return () => clearTimeout(timeout);
-  }, [content]);
 
   // rename on blur
   const handleRename = async () => {
@@ -69,7 +58,7 @@ export default function NoteView() {
       await updateContent({
         variables: {
           id: note.id,
-          contentText: contentText,
+          contentText,
           contentJson: JSON.stringify(contentJson),
         },
       });
