@@ -271,7 +271,7 @@ export type RenameFolderInput = {
 };
 
 export type RenameNoteInput = {
-  id: Scalars['ID']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
   title: Scalars['String']['input'];
 };
 
@@ -338,7 +338,7 @@ export type GetFolderByUrlQuery = { __typename?: 'Query', folderByUrl?: { __type
 export type GetFoldersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typename?: 'Folder', id: string, name: string, url?: string | null, color?: string | null, sortOrder: number, createdAt: any, updatedAt: any, notes?: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null } | null> | null }> };
+export type GetFoldersQuery = { __typename?: 'Query', folders: Array<{ __typename?: 'Folder', id: string, name: string, url?: string | null, color?: string | null, sortOrder: number, createdAt: any, updatedAt: any, notes?: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, deletedAt?: any | null } | null> | null }> };
 
 export type GetNoteByUrlQueryVariables = Exact<{
   url: Scalars['String']['input'];
@@ -350,7 +350,7 @@ export type GetNoteByUrlQuery = { __typename?: 'Query', NoteByUrl?: { __typename
 export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, folderId?: string | null, createdAt: any, updatedAt: any }> };
+export type GetNotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, folderId?: string | null, createdAt: any, updatedAt: any, deletedAt?: any | null }> };
 
 export type GetNotesByFolderIdQueryVariables = Exact<{
   folderId?: InputMaybe<Scalars['String']['input']>;
@@ -610,6 +610,7 @@ export const GetFoldersDocument = gql`
       title
       url
       color
+      deletedAt
     }
   }
 }
@@ -704,6 +705,7 @@ export const GetNotesDocument = gql`
     folderId
     createdAt
     updatedAt
+    deletedAt
   }
 }
     `;

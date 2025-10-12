@@ -8,6 +8,7 @@ import {
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import tinycolor from "tinycolor2";
+import TiptapEditor from "../../components/TipTapEditor";
 
 export default function NoteView() {
   const { noteUrl } = useParams<{ noteUrl: string }>();
@@ -26,6 +27,8 @@ export default function NoteView() {
   const [title, setTitle] = useState(note?.title || "");
   const [content, setContent] = useState(note?.contentText || "");
   const [isSaving, setIsSaving] = useState(false);
+  const [contentJson, setContentJson] = useState(note?.contentJson || null);
+  const [contentText, setContentText] = useState(note?.contentText || "");
 
   // load note data when fetched
   useEffect(() => {
@@ -57,6 +60,23 @@ export default function NoteView() {
       refetch();
     }
   };
+
+  // auto-save the structured JSON
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      if (!note) return;
+      setIsSaving(true);
+      await updateContent({
+        variables: {
+          id: note.id,
+          contentText: contentText,
+          contentJson: JSON.stringify(contentJson),
+        },
+      });
+      setIsSaving(false);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [contentJson, contentText]);
 
   const base = note?.color ?? "#c5d5f0";
   const lighter = tinycolor(base).lighten(5).toString();
@@ -90,11 +110,12 @@ export default function NoteView() {
               {isSaving ? "Saving..." : "All changes saved"}
             </p>
 
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="It’s empty here… let’s write something ✏️"
-              className="w-full min-h-[60vh] bg-transparent mt-6 outline-none text-gray-700 text-lg resize-none"
+            <TiptapEditor
+              content={contentJson}
+              onChange={(json, text) => {
+                setContentJson(json);
+                setContentText(text);
+              }}
             />
           </div>
         </main>

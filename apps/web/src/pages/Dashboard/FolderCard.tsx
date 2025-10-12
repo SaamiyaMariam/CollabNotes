@@ -43,7 +43,17 @@ export default function FolderCard({ folder, onClick, selected, onSelectToggle }
 
         <div className="folder-info">
           <h3 className="folder-title">{folder.name}</h3>
-          <p className="folder-count">{folder.notes?.length ?? 0} notes</p>
+          {(() => {
+            const activeNotes = folder.notes?.filter(
+              (note) => !note?.deletedAt
+            ) ?? [];
+
+            return (
+              <p className="folder-count">
+                {activeNotes.length} {activeNotes.length === 1 ? "Note" : "Notes"}
+              </p>
+            );
+          })()}
         </div>
       </div>
     </div>
