@@ -73,7 +73,7 @@ async createNote(userId: string, input: CreateNoteInput) {
   // Keep incrementing until unique within same folder scope
   while (
     await this.prisma.note.findFirst({
-      where: {
+    where: {
         ownerId: userId,
         folderId: input.folderId ?? null,
         url: slug,

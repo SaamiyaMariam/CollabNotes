@@ -105,10 +105,12 @@ export default function Sidebar({ currentNoteId, folderId }: SidebarProps) {
             <div className="mt-2 flex flex-col">
                 {notes.map((note) => {
                 const baseColor = note.color || "#a8d1e7"; // fallback color
+                
+                console.log("🟠 Note's Folder:", folder.url);
                 return (
                     <button
                     key={note.id}
-                    onClick={() => navigate(`/note/${note.url}`)}
+                    onClick={() => navigate(`/${folder.url}/${note.url}`)}
                     className={`text-left px-8 py-2 mt-2 rounded-lg text-sm font-medium transition ${
                         note.id === currentNoteId
                         ? "text-white"
