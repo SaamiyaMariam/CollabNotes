@@ -92,6 +92,39 @@ importers:
       '@prisma/client':
         specifier: ^6.16.1
         version: 6.16.2(prisma@6.16.2(typescript@5.8.3))(typescript@5.8.3)
+      '@tiptap/extension-bullet-list':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extension-list@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
+      '@tiptap/extension-color':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extension-text-style@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6)))
+      '@tiptap/extension-highlight':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))
+      '@tiptap/extension-history':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extensions@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
+      '@tiptap/extension-link':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6)
+      '@tiptap/extension-list-item':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extension-list@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
+      '@tiptap/extension-ordered-list':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extension-list@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
+      '@tiptap/extension-task-item':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extension-list@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
+      '@tiptap/extension-task-list':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extension-list@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
+      '@tiptap/extension-text-style':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))
+      '@tiptap/extension-underline':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))
       apollo-server-express:
         specifier: 3.11.1
         version: 3.11.1(express@5.1.0)(graphql@15.8.0)
@@ -231,9 +264,21 @@ importers:
       '@apollo/client':
         specifier: 3.9.11
         version: 3.9.11(@types/react@19.1.13)(graphql-ws@5.11.3(graphql@16.11.0))(graphql@16.11.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(subscriptions-transport-ws@0.11.0(graphql@16.11.0))
+      '@tiptap/extension-color':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extension-text-style@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6)))
+      '@tiptap/extension-highlight':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))
+      '@tiptap/extension-history':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/extensions@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
       '@tiptap/extension-placeholder':
         specifier: ^3.6.6
         version: 3.6.6(@tiptap/extensions@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))
+      '@tiptap/extension-text-style':
+        specifier: ^3.6.6
+        version: 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))
       '@tiptap/react':
         specifier: ^3.6.6
         version: 3.6.6(@floating-ui/dom@1.7.4)(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6)(@types/react-dom@19.1.9(@types/react@19.1.13))(@types/react@19.1.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -2091,6 +2136,11 @@ packages:
     peerDependencies:
       '@tiptap/core': ^3.6.6
 
+  '@tiptap/extension-color@3.6.6':
+    resolution: {integrity: sha512-f5MuNDk7noo/3yGcXlAnKmRLMgnWGMaKUEGE0O/26KYSC4iH1tTJmloSWYonVRUxIVE4ISz/Mv6cjtbk+PbtDA==}
+    peerDependencies:
+      '@tiptap/extension-text-style': ^3.6.6
+
   '@tiptap/extension-document@3.6.6':
     resolution: {integrity: sha512-MnPvlEsoNKYwvuNOFC4mKbsie1G5LFz9DeOte/waON1zZ3vwChWuP6p0sGVoS3/s1TIlUtH8/XpxP9tZH7VFrA==}
     peerDependencies:
@@ -2122,6 +2172,16 @@ packages:
     resolution: {integrity: sha512-aIQLodCEI1+c4vmEhZrrvTTPGSaURfKdwzK+HnweN8p20XPly3EWSnC5ocqv0msiYYjnhLKIATU1pmjiLssrWg==}
     peerDependencies:
       '@tiptap/core': ^3.6.6
+
+  '@tiptap/extension-highlight@3.6.6':
+    resolution: {integrity: sha512-XHa4k8TTNAXtnZtjWeAIdFe+z4IXIEcPMvrm4GNU/KpjRx2giwCKAINl5MsXLr9WD54TQrjItEeAhtZO0aacJw==}
+    peerDependencies:
+      '@tiptap/core': ^3.6.6
+
+  '@tiptap/extension-history@3.6.6':
+    resolution: {integrity: sha512-Pv5HwhrAEF8aSaFBIUcXvURzBMPVndFoAXxFcoMEuHDFtlKLVZ2y8UA+uz6S3f+caCOQTB/7EWgeiENzaQHR1w==}
+    peerDependencies:
+      '@tiptap/extensions': ^3.6.6
 
   '@tiptap/extension-horizontal-rule@3.6.6':
     resolution: {integrity: sha512-SprNpSoz2or/Ju3qXHrD3NbqL3xCHxdPk9uJsrbIDvB+1ZANKN3gxB40lyxf9mIYMcNavYVE6fzjGyODk0iAEg==}
@@ -2185,6 +2245,11 @@ packages:
     resolution: {integrity: sha512-FZyVOi6DqPedHHZ+F8Ee0EKfiLx0R0HPfZtfTunshcdgKJkXfMSexTKKC0rP71L5eBVulNcuDv3oRXfFIWG2kw==}
     peerDependencies:
       '@tiptap/extension-list': ^3.6.6
+
+  '@tiptap/extension-text-style@3.6.6':
+    resolution: {integrity: sha512-mjcMfNIij77tK++Cu41z5rxK0I4nUR7EbTtBGCSdbwZukTFqCeaiuUX3A/i0sqnf5kklBqmG+pur/ylwEcxmzA==}
+    peerDependencies:
+      '@tiptap/core': ^3.6.6
 
   '@tiptap/extension-text@3.6.6':
     resolution: {integrity: sha512-dlD1cNuouaPNeF6iXfaHuGt4aXaxROQMkfuhbYXeImcQMzO+tjPF4WESxahBC+VPpKvi3H9tUv1CVqwrRJL5Qw==}
@@ -8140,6 +8205,10 @@ snapshots:
     dependencies:
       '@tiptap/core': 3.6.6(@tiptap/pm@3.6.6)
 
+  '@tiptap/extension-color@3.6.6(@tiptap/extension-text-style@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6)))':
+    dependencies:
+      '@tiptap/extension-text-style': 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))
+
   '@tiptap/extension-document@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))':
     dependencies:
       '@tiptap/core': 3.6.6(@tiptap/pm@3.6.6)
@@ -8166,6 +8235,14 @@ snapshots:
   '@tiptap/extension-heading@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))':
     dependencies:
       '@tiptap/core': 3.6.6(@tiptap/pm@3.6.6)
+
+  '@tiptap/extension-highlight@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))':
+    dependencies:
+      '@tiptap/core': 3.6.6(@tiptap/pm@3.6.6)
+
+  '@tiptap/extension-history@3.6.6(@tiptap/extensions@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))':
+    dependencies:
+      '@tiptap/extensions': 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6)
 
   '@tiptap/extension-horizontal-rule@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6)':
     dependencies:
@@ -8218,6 +8295,10 @@ snapshots:
   '@tiptap/extension-task-list@3.6.6(@tiptap/extension-list@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6))':
     dependencies:
       '@tiptap/extension-list': 3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))(@tiptap/pm@3.6.6)
+
+  '@tiptap/extension-text-style@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))':
+    dependencies:
+      '@tiptap/core': 3.6.6(@tiptap/pm@3.6.6)
 
   '@tiptap/extension-text@3.6.6(@tiptap/core@3.6.6(@tiptap/pm@3.6.6))':
     dependencies:

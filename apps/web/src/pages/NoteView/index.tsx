@@ -13,6 +13,16 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import "../../styles/NoteView.css";
+import Underline from "@tiptap/extension-underline";
+import Highlight from "@tiptap/extension-highlight";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import BulletList from "@tiptap/extension-bullet-list";
+import { TextStyle } from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import Link from "@tiptap/extension-link";
+import EditorToolbar from "../../components/EditorToolbar";
 
 export default function NoteView() {
   const { noteUrl } = useParams<{ noteUrl: string }>();
@@ -37,10 +47,23 @@ export default function NoteView() {
   const lastSavedJson = useRef<any>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
 
-  // 🖊️ TipTap Editor
   const editor = useEditor({
-    extensions: [
-      StarterKit,
+  extensions: [
+      StarterKit.configure({
+        underline: false,
+        link: false,
+      }),
+      Underline,
+      Highlight,
+      TextStyle,
+      Color,
+      Link.configure({ openOnClick: false }),
+
+      TaskList,
+      TaskItem.configure({ nested: true }),
+      BulletList,
+      OrderedList,
+
       Placeholder.configure({
         placeholder: "It’s empty here… let’s write something ✏️",
       }),
@@ -76,19 +99,19 @@ export default function NoteView() {
 
         lastSavedJson.current = json;
         setTimeout(() => setIsSaving(false), 300); // only mark done when actual save finishes
-      }, 2000);
+      }, 1000);
     },
 
   });
 
   // Load content
-  useEffect(() => {
-    if (note && editor) {
-      editor.commands.setContent(note.contentJson || "");
-      setTitle(note.title);
-      lastSavedJson.current = note.contentJson;
-    }
-  }, [note, editor]);
+  // useEffect(() => {
+  //   if (note && editor) {
+  //     editor.commands.setContent(note.contentJson || "");
+  //     setTitle(note.title);
+  //     lastSavedJson.current = note.contentJson;
+  //   }
+  // }, [note, editor]);
 
   useEffect(() => {
     if (note && editor) {
@@ -156,6 +179,7 @@ export default function NoteView() {
 
             {/* Editor */}
             <div className="mt-6 min-h-[60vh] bg-transparent outline-none text-gray-700 text-lg">
+              <EditorToolbar editor={editor} />
               <EditorContent editor={editor} />
             </div>
           </div>
