@@ -12,7 +12,6 @@ import tinycolor from "tinycolor2";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import "../../styles/NoteView.css";
 import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
 import TaskList from "@tiptap/extension-task-list";
@@ -23,11 +22,13 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
 import EditorToolbar from "../../components/EditorToolbar";
+import "../../styles/NoteView.css";
 
 export default function NoteView() {
   const { noteUrl } = useParams<{ noteUrl: string }>();
   const { data: meData } = useMeQuery();
   const navigate = useNavigate();
+
   const token = localStorage.getItem("accessToken");
   if (!token) return navigate("/auth");
 
@@ -35,11 +36,13 @@ export default function NoteView() {
     variables: { url: noteUrl! },
     skip: !noteUrl,
   });
+
   const [renameNote] = useRenameNoteMutation();
   const [updateContent] = useUpdateNoteContentMutation();
-  const username = meData?.me?.displayName ?? "User";
 
+  const username = meData?.me?.displayName ?? "User";
   const note = data?.NoteByUrl;
+
   const [title, setTitle] = useState(note?.title || "");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -48,22 +51,17 @@ export default function NoteView() {
   const titleRef = useRef<HTMLHeadingElement | null>(null);
 
   const editor = useEditor({
-  extensions: [
-      StarterKit.configure({
-        underline: false,
-        link: false,
-      }),
+    extensions: [
+      StarterKit.configure({ underline: false, link: false }),
       Underline,
       Highlight,
       TextStyle,
       Color,
       Link.configure({ openOnClick: false }),
-
       TaskList,
       TaskItem.configure({ nested: true }),
       BulletList,
       OrderedList,
-
       Placeholder.configure({
         placeholder: "It’s empty here… let’s write something ✏️",
       }),
@@ -80,54 +78,42 @@ export default function NoteView() {
       const json = editor.getJSON();
       const text = editor.getText();
 
-      // If content unchanged, do nothing
       if (JSON.stringify(json) === JSON.stringify(lastSavedJson.current)) return;
 
-      // As soon as user types — mark as saving
       setIsSaving(true);
-
-      // Reset debounce timer
       if (saveTimeout.current) clearTimeout(saveTimeout.current);
 
-      // Debounced save after 2s of inactivity
       saveTimeout.current = setTimeout(async () => {
         if (!note) return;
-
-        await updateContent({
-          variables: { input: { id: note.id, contentText: text, contentJson: json } },
-        });
-
-        lastSavedJson.current = json;
-        setTimeout(() => setIsSaving(false), 300); // only mark done when actual save finishes
+        try {
+          await updateContent({
+            variables: { input: { id: note.id, contentText: text, contentJson: json } },
+          });
+          lastSavedJson.current = json;
+        } finally {
+          setIsSaving(false);
+        }
       }, 1000);
     },
-
   });
 
-  // Load content
-  // useEffect(() => {
-  //   if (note && editor) {
-  //     editor.commands.setContent(note.contentJson || "");
-  //     setTitle(note.title);
-  //     lastSavedJson.current = note.contentJson;
-  //   }
-  // }, [note, editor]);
-
+  // Properly sync note content on load/change
   useEffect(() => {
     if (note && editor) {
-      editor.commands.setContent(note.contentJson || "");
+      const currentJson = editor.getJSON();
+      if (JSON.stringify(note.contentJson) !== JSON.stringify(currentJson)) {
+        editor.commands.setContent(note.contentJson || "");
+        lastSavedJson.current = note.contentJson;
+      }
       setTitle(note.title);
-      if (titleRef.current) titleRef.current.innerText = note.title; // 🧠 keep DOM text synced without re-render
-      lastSavedJson.current = note.contentJson;
+      if (titleRef.current) titleRef.current.innerText = note.title;
     }
-  }, [note, editor]);
+  }, [note?.id]);
 
-  // Prevent cursor reset on title typing
   const handleTitleInput = (e: React.FormEvent<HTMLElement>) => {
     setTitle(e.currentTarget.innerText);
   };
 
-  // Rename on blur
   const handleRename = async () => {
     if (!note) return;
     const trimmed = title.trim();
@@ -135,13 +121,9 @@ export default function NoteView() {
       const res = await renameNote({
         variables: { input: { id: note.id, title: trimmed } },
       });
-
       const newUrl = res.data?.renameNote?.url;
-      if (newUrl && newUrl !== note.url) {
-        navigate(`/notes/${newUrl}`); // 🧭 redirect to updated note URL
-      } else {
-        await refetch(); // fallback
-      }
+      if (newUrl && newUrl !== note.url) navigate(`/notes/${newUrl}`);
+      else await refetch();
     }
   };
 
@@ -157,12 +139,9 @@ export default function NoteView() {
 
         <main
           className="flex-1 mt-[8px] p-8 rounded-2xl mx-2 shadow-inner overflow-y-auto"
-          style={{
-            background: `linear-gradient(to bottom, ${base}, ${lighter})`,
-          }}
+          style={{ background: `linear-gradient(to bottom, ${base}, ${lighter})` }}
         >
           <div className="max-w-3xl mx-auto bg-white/70 p-6 rounded-2xl shadow-sm prose">
-            {/* Title */}
             <h1
               ref={titleRef}
               contentEditable
@@ -170,14 +149,12 @@ export default function NoteView() {
               onInput={handleTitleInput}
               onBlur={handleRename}
               className="text-3xl font-bold mb-2 outline-none border-b border-transparent focus:border-gray-300 text-gray-800 caret-black"
-            >
-            </h1>
+            ></h1>
 
             <p className="text-gray-400 text-sm mt-1">
               {isSaving ? "Saving..." : "All changes saved"}
             </p>
 
-            {/* Editor */}
             <div className="mt-6 min-h-[60vh] bg-transparent outline-none text-gray-700 text-lg">
               <EditorToolbar editor={editor} />
               <EditorContent editor={editor} />
