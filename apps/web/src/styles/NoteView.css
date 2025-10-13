@@ -1,0 +1,14 @@
+.ProseMirror {
+  outline: none !important;
+}
+.ProseMirror:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #aaa;
+  pointer-events: none;
+  height: 0;
+}
