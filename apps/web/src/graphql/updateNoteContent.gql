@@ -1,5 +1,5 @@
-mutation UpdateNoteContent($id: String!, $contentText: String, $contentJson: String) {
-  updateNoteContent(id: $id, contentText: $contentText, contentJson: $contentJson) {
+mutation UpdateNoteContent($input: UpdateNoteContentInput!) {
+  updateNoteContent(input: $input) {
     id
     contentText
     contentJson

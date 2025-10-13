@@ -8,7 +8,6 @@ import {
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import tinycolor from "tinycolor2";
-import TiptapEditor from "../../components/TipTapEditor";
 
 export default function NoteView() {
   const { noteUrl } = useParams<{ noteUrl: string }>();
@@ -19,26 +18,41 @@ export default function NoteView() {
   const { data, refetch } = useGetNoteByUrlQuery({
     variables: { url: noteUrl! },
     skip: !noteUrl,
-    fetchPolicy: "network-only", // always fetch fresh note data
   });
-
   const [renameNote] = useRenameNoteMutation();
   const [updateContent] = useUpdateNoteContentMutation();
 
   const note = data?.NoteByUrl;
   const [title, setTitle] = useState(note?.title || "");
-  const [contentJson, setContentJson] = useState(note?.contentJson ? JSON.parse(note.contentJson) : null);
-  const [contentText, setContentText] = useState(note?.contentText || "");
+  const [content, setContent] = useState(note?.contentText || "");
   const [isSaving, setIsSaving] = useState(false);
 
-  // update local state when note changes (switching between notes)
+  // load note data when fetched
   useEffect(() => {
     if (note) {
       setTitle(note.title);
-      setContentJson(note.contentJson ? JSON.parse(note.contentJson) : null);
-      setContentText(note.contentText || "");
+      setContent(note.contentText || "");
     }
   }, [note]);
+
+  // autosave content
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      if (!note) return;
+      setIsSaving(true);
+      await updateContent({
+        variables: {
+          input: {
+            id: note.id,
+            contentText: content,
+            contentJson: { type: "doc", content: [{ type: "paragraph", content: [] }] },
+          },
+        },
+      });
+      setIsSaving(false);
+    }, 800);
+    return () => clearTimeout(timeout);
+  }, [content]);
 
   // rename on blur
   const handleRename = async () => {
@@ -49,23 +63,6 @@ export default function NoteView() {
       refetch();
     }
   };
-
-  // auto-save the structured JSON
-  useEffect(() => {
-    const timeout = setTimeout(async () => {
-      if (!note) return;
-      setIsSaving(true);
-      await updateContent({
-        variables: {
-          id: note.id,
-          contentText,
-          contentJson: JSON.stringify(contentJson),
-        },
-      });
-      setIsSaving(false);
-    }, 1000);
-    return () => clearTimeout(timeout);
-  }, [contentJson, contentText]);
 
   const base = note?.color ?? "#c5d5f0";
   const lighter = tinycolor(base).lighten(5).toString();
@@ -99,12 +96,11 @@ export default function NoteView() {
               {isSaving ? "Saving..." : "All changes saved"}
             </p>
 
-            <TiptapEditor
-              content={contentJson}
-              onChange={(json, text) => {
-                setContentJson(json);
-                setContentText(text);
-              }}
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="It’s empty here… let’s write something ✏️"
+              className="w-full min-h-[60vh] bg-transparent mt-6 outline-none text-gray-700 text-lg resize-none"
             />
           </div>
         </main>

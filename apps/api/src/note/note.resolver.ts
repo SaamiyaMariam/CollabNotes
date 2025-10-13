@@ -5,11 +5,13 @@ import { CreateNoteInput } from './dto/create-note.input';
 import { RenameNoteInput } from './dto/rename-note.input';
 import { MoveNoteInput } from './dto/move-note.input';
 import { ReorderNoteInput } from './dto/reorder-note.input';
+import { UpdateNoteContentInput } from './dto/update-note-content.input';
 import { SetNoteColorInput } from './dto/set-note-color.input';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { Prisma } from '@prisma/client';
 
 @Resolver(() => Note)
 export class NoteResolver {
@@ -98,11 +100,9 @@ export class NoteResolver {
   @Mutation(() => Note, { description: 'Update note content (CREATOR or EDITOR allowed)' })
   async updateNoteContent(
     @CurrentUser() user: User,
-    @Args('id') id: string,
-    @Args('contentText', { nullable: true }) contentText?: string,
-    @Args('contentJson', { nullable: true }) contentJson?: string,
+    @Args('input') input: UpdateNoteContentInput,
   ) {
+    const { id, contentText, contentJson } = input;
     return this.noteService.updateNoteContent(user.id, id, contentText, contentJson);
   }
-
 }
