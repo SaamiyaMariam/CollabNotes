@@ -1,6 +1,7 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { NoteCollaborator } from '../../collaborator/entities/collaborator.entity';
 import { Folder } from '../../folder/entities/folder.entity';
+import { GraphQLJSON } from 'graphql-type-json';
 
 @ObjectType()
 export class Note {
@@ -10,8 +11,8 @@ export class Note {
   @Field()
   title!: string;
   
-  @Field({ nullable: true })
-  contentJson?: string;
+  @Field(() => GraphQLJSON, { nullable: true })
+  contentJson?: any;
 
   @Field({ nullable: true })
   contentText?: string;

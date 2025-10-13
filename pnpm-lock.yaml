@@ -110,6 +110,9 @@ importers:
       graphql:
         specifier: 15.8.0
         version: 15.8.0
+      graphql-type-json:
+        specifier: ^0.3.2
+        version: 0.3.2(graphql@15.8.0)
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -10158,6 +10161,10 @@ snapshots:
     dependencies:
       graphql: 16.11.0
       tslib: 2.5.0
+
+  graphql-type-json@0.3.2(graphql@15.8.0):
+    dependencies:
+      graphql: 15.8.0
 
   graphql-type-json@0.3.2(graphql@16.11.0):
     dependencies:

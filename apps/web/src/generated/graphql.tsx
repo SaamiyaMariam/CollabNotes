@@ -16,6 +16,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
+  JSON: { input: any; output: any; }
 };
 
 export type AddCollaboratorInput = {
@@ -184,16 +185,14 @@ export type MutationSignupArgs = {
 
 
 export type MutationUpdateNoteContentArgs = {
-  contentJson?: InputMaybe<Scalars['String']['input']>;
-  contentText?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['String']['input'];
+  input: UpdateNoteContentInput;
 };
 
 export type Note = {
   __typename?: 'Note';
   collaborators?: Maybe<Array<NoteCollaborator>>;
   color?: Maybe<Scalars['String']['output']>;
-  contentJson?: Maybe<Scalars['String']['output']>;
+  contentJson?: Maybe<Scalars['JSON']['output']>;
   contentText?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -291,6 +290,12 @@ export type SignupInput = {
   password: Scalars['String']['input'];
 };
 
+export type UpdateNoteContentInput = {
+  contentJson?: InputMaybe<Scalars['JSON']['input']>;
+  contentText?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime']['output'];
@@ -345,7 +350,7 @@ export type GetNoteByUrlQueryVariables = Exact<{
 }>;
 
 
-export type GetNoteByUrlQuery = { __typename?: 'Query', NoteByUrl?: { __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, contentText?: string | null, contentJson?: string | null, folderId?: string | null, createdAt: any, updatedAt: any } | null };
+export type GetNoteByUrlQuery = { __typename?: 'Query', NoteByUrl?: { __typename?: 'Note', id: string, title: string, url?: string | null, color?: string | null, contentText?: string | null, contentJson?: any | null, folderId?: string | null, createdAt: any, updatedAt: any } | null };
 
 export type GetNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -388,13 +393,11 @@ export type SetNoteColorMutationVariables = Exact<{
 export type SetNoteColorMutation = { __typename?: 'Mutation', setNoteColor: { __typename?: 'Note', id: string, color?: string | null } };
 
 export type UpdateNoteContentMutationVariables = Exact<{
-  id: Scalars['String']['input'];
-  contentText?: InputMaybe<Scalars['String']['input']>;
-  contentJson?: InputMaybe<Scalars['String']['input']>;
+  input: UpdateNoteContentInput;
 }>;
 
 
-export type UpdateNoteContentMutation = { __typename?: 'Mutation', updateNoteContent: { __typename?: 'Note', id: string, contentText?: string | null, contentJson?: string | null, updatedAt: any } };
+export type UpdateNoteContentMutation = { __typename?: 'Mutation', updateNoteContent: { __typename?: 'Note', id: string, contentText?: string | null, contentJson?: any | null, updatedAt: any } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -935,8 +938,8 @@ export type SetNoteColorMutationHookResult = ReturnType<typeof useSetNoteColorMu
 export type SetNoteColorMutationResult = Apollo.MutationResult<SetNoteColorMutation>;
 export type SetNoteColorMutationOptions = Apollo.BaseMutationOptions<SetNoteColorMutation, SetNoteColorMutationVariables>;
 export const UpdateNoteContentDocument = gql`
-    mutation UpdateNoteContent($id: String!, $contentText: String, $contentJson: String) {
-  updateNoteContent(id: $id, contentText: $contentText, contentJson: $contentJson) {
+    mutation UpdateNoteContent($input: UpdateNoteContentInput!) {
+  updateNoteContent(input: $input) {
     id
     contentText
     contentJson
@@ -959,9 +962,7 @@ export type UpdateNoteContentMutationFn = Apollo.MutationFunction<UpdateNoteCont
  * @example
  * const [updateNoteContentMutation, { data, loading, error }] = useUpdateNoteContentMutation({
  *   variables: {
- *      id: // value for 'id'
- *      contentText: // value for 'contentText'
- *      contentJson: // value for 'contentJson'
+ *      input: // value for 'input'
  *   },
  * });
  */

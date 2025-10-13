@@ -208,7 +208,7 @@ async renameNote(userId: string, input: RenameNoteInput) {
     return this.findNotes(userId, folderId ?? undefined);
   }
 
-  async updateNoteContent(userId: string, id: string, contentText?: string, contentJson?: string) {
+  async updateNoteContent(userId: string, id: string, contentText?: string, contentJson?: Prisma.InputJsonValue) {
     const note = await this.prisma.note.findUnique({
       where: { id },
       include: { collaborators: true },
@@ -216,14 +216,23 @@ async renameNote(userId: string, input: RenameNoteInput) {
     if (!note) throw new NotFoundException('Note not found');
     assertCanEdit(userId, note);
 
+    // Always store some JSON so the column is never null
+    const finalJson: Prisma.InputJsonValue =
+      contentJson !== undefined
+        ? (contentJson as unknown as Prisma.InputJsonValue)
+        : (note.contentJson ??
+            ({
+              type: 'doc',
+              content: contentText
+                ? [{ type: 'paragraph', content: [{ type: 'text', text: contentText }] }]
+                : [],
+            } as Prisma.InputJsonValue));
+
     return this.prisma.note.update({
       where: { id: note.id },
       data: {
         contentText: contentText ?? note.contentText,
-        contentJson:
-          contentJson !== undefined
-            ? (contentJson as unknown as Prisma.InputJsonValue)
-            : (note.contentJson as unknown as Prisma.InputJsonValue),
+        contentJson: finalJson,
       },
     });
   }

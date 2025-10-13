@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { FolderModule } from './folder/folder.module';
 import { NoteModule } from './note/note.module';
 import { CollaboratorModule } from './collaborator/collaborator.module';
+import { GraphQLJSON } from 'graphql-type-json';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CollaboratorModule } from './collaborator/collaborator.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
+      resolvers: { JSON: GraphQLJSON },
       // IMPORTANT: disable GraphQL’s internal body parser
       bodyParserConfig: false,
       context: ({ req, res }) => ({ req, res }),
