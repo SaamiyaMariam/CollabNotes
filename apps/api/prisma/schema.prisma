@@ -8,16 +8,16 @@ generator client {
 }
 
 model User {
-  id            String             @id @default(cuid())
-  email         String             @unique
-  password      String
-  displayName   String
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  displayName String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  refreshTokens RefreshToken[]
-  notes         Note[]             @relation("UserNotes")
-  folders       Folder[]           @relation("UserFolders")
+  refreshTokens  RefreshToken[]
+  notes          Note[]             @relation("UserNotes")
+  folders        Folder[]           @relation("UserFolders")
   collaborations NoteCollaborator[]
 }
 
@@ -31,60 +31,62 @@ model RefreshToken {
 }
 
 model Folder {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   ownerId   String
-  owner     User     @relation("UserFolders", fields: [ownerId], references: [id])
+  owner     User      @relation("UserFolders", fields: [ownerId], references: [id])
   name      String
   color     String?
   sortOrder Int       @default(0)
   deletedAt DateTime?
-  url         String    @unique
+  url       String    @unique
   parentId  String?
   parent    Folder?   @relation("FolderToFolder", fields: [parentId], references: [id])
   children  Folder[]  @relation("FolderToFolder")
 
-  notes     Note[]
+  notes Note[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@unique([ownerId, url])
   @@index([ownerId, deletedAt])
-   @@unique([ownerId, url])
 }
 
 model Note {
-  id          String   @id @default(cuid())
-  ownerId     String
-  owner       User     @relation("UserNotes", fields: [ownerId], references: [id])
+  id      String @id @default(cuid())
+  ownerId String
+  owner   User   @relation("UserNotes", fields: [ownerId], references: [id])
 
-  folderId    String?
-  folder      Folder?  @relation(fields: [folderId], references: [id])
+  folderId String?
+  folder   Folder? @relation(fields: [folderId], references: [id])
 
-  title       String   @default("Untitled")
-  contentJson Json?
-  contentText String?
-  color       String?
-  sortOrder   Int       @default(0)
-  deletedAt   DateTime?
-  url         String
+  title         String             @default("Untitled")
+  contentJson   Json?
+  contentText   String?
+  color         String?
+  sortOrder     Int                @default(0)
+  deletedAt     DateTime?
+  url           String
   collaborators NoteCollaborator[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  ydocState YDocState?
+
+  @@unique([ownerId, folderId, url])
   @@index([ownerId, folderId, deletedAt])
-   @@unique([ownerId, folderId, url])
 }
 
 model NoteCollaborator {
-  noteId   String
-  userId   String
-  role     CollaboratorRole @default(EDITOR)
-  addedBy  String
-  createdAt DateTime @default(now())
+  noteId    String
+  userId    String
+  role      CollaboratorRole @default(EDITOR)
+  addedBy   String
+  createdAt DateTime         @default(now())
 
-  note     Note   @relation(fields: [noteId], references: [id])
-  user     User   @relation(fields: [userId], references: [id])
+  note Note @relation(fields: [noteId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
   @@id([noteId, userId])
   @@index([userId])
@@ -93,4 +95,11 @@ model NoteCollaborator {
 enum CollaboratorRole {
   EDITOR
   CREATOR
+}
+
+model YDocState {
+  noteId    String   @id
+  note      Note     @relation(fields: [noteId], references: [id])
+  state     Bytes
+  updatedAt DateTime @updatedAt
 }
