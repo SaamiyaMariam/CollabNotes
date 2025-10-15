@@ -9,6 +9,7 @@ import { FolderModule } from './folder/folder.module';
 import { NoteModule } from './note/note.module';
 import { CollaboratorModule } from './collaborator/collaborator.module';
 import { GraphQLJSON } from 'graphql-type-json';
+import { CollabModule } from './collab/collab.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { GraphQLJSON } from 'graphql-type-json';
     FolderModule,
     NoteModule,
     CollaboratorModule,
+    CollabModule,
   ],
 })
 export class AppModule {}

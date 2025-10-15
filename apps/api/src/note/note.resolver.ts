@@ -30,6 +30,7 @@ export class NoteResolver {
     return this.noteService.findNotes(user.id, folderId);
   }
 
+  @UseGuards(GqlAuthGuard) 
   @Query(() => Note, { description: 'Get a single note (must be creator or collaborator)' })
   async note(@CurrentUser() user: User, @Args('id') id: string) {
     return this.noteService.findOne(user.id, id);
