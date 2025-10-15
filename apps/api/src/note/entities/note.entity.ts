@@ -10,6 +10,9 @@ export class Note {
 
   @Field()
   title!: string;
+
+  @Field(() => String)
+  ownerId!: string;
   
   @Field(() => GraphQLJSON, { nullable: true })
   contentJson?: any;

@@ -105,6 +105,7 @@ type Note {
   folder: Folder
   folderId: String
   id: ID!
+  ownerId: String!
   sortOrder: Float!
   title: String!
   updatedAt: DateTime!

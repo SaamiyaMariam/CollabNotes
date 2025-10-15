@@ -199,6 +199,7 @@ export type Note = {
   folder?: Maybe<Folder>;
   folderId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  ownerId: Scalars['String']['output'];
   sortOrder: Scalars['Float']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
