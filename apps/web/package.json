@@ -13,6 +13,8 @@
     "@apollo/client": "3.9.11",
     "@tiptap/core": "^3.7.2",
     "@tiptap/extension-bullet-list": "^3.6.6",
+    "@tiptap/extension-collaboration": "^3.7.2",
+    "@tiptap/extension-collaboration-cursor": "^2.26.2",
     "@tiptap/extension-color": "^3.6.6",
     "@tiptap/extension-highlight": "^3.6.6",
     "@tiptap/extension-history": "^3.6.6",
@@ -29,7 +31,9 @@
     "lucide-react": "^0.544.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "tinycolor2": "^1.6.0"
+    "tinycolor2": "^1.6.0",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",

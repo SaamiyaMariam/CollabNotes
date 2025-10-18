@@ -5,6 +5,7 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "erasableSyntaxOnly": false
+    "erasableSyntaxOnly": false,
+    "types" : ["node"]
   }
 }
