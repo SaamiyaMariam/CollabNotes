@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   useGetNoteByUrlQuery,
@@ -23,6 +23,10 @@ import Color from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
 import EditorToolbar from "../../components/EditorToolbar";
 import "../../styles/NoteView.css";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
 export default function NoteView() {
   const { noteUrl } = useParams<{ noteUrl: string }>();
@@ -46,9 +50,30 @@ export default function NoteView() {
   const [title, setTitle] = useState(note?.title || "");
   const [isSaving, setIsSaving] = useState(false);
 
-  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedJson = useRef<any>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+
+  const ydoc = useMemo(() => new Y.Doc(), []);
+  const [provider, setProvider] = useState<WebsocketProvider | null>(null);
+
+  // connect the provider when we have a note id
+  useEffect(() => {
+    if (!note?.id) return;
+
+    const p = new WebsocketProvider(
+      "ws://localhost:1234", // dev y-websocket server
+      `note-${note.id}`,     // room name per note
+      ydoc
+    );
+
+    setProvider(p);
+
+    return () => {
+      p.destroy();
+      setProvider(null);
+    };
+  }, [note?.id, ydoc]);
 
   const editor = useEditor({
     extensions: [
@@ -64,6 +89,17 @@ export default function NoteView() {
       OrderedList,
       Placeholder.configure({
         placeholder: "It’s empty here… let’s write something ✏️",
+      }),
+
+      // Realtime!
+      Collaboration.configure({ document: ydoc }),
+      CollaborationCursor.configure({
+        provider,
+        user: {
+          name: username,
+          // simple distinct color per user:
+          color: "#" + ((Math.random() * 0xffffff) | 0).toString(16).padStart(6, "0"),
+        },
       }),
     ],
     content: note?.contentJson || "",

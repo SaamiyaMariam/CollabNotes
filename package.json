@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "collab": "y-websocket --port 1234 --host localhost"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,10 @@
     "graphql": "^16.11.0",
     "graphql-type-json": "^0.3.2",
     "lowlight": "^3.3.0",
-    "react-router-dom": "^7.9.1"
+    "react-router-dom": "^7.9.1",
+    "y-websocket": "^1.5.3"
+  },
+  "devDependencies": {
+    "y-websocket-server": "^1.0.2"
   }
 }
