@@ -77,7 +77,12 @@ export default function NoteView() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ underline: false, link: false }),
+      StarterKit.configure({
+        underline: false,
+        link: false,
+        bulletList: false,
+        orderedList: false,
+      }),
       Underline,
       Highlight,
       TextStyle,
@@ -91,16 +96,23 @@ export default function NoteView() {
         placeholder: "It’s empty here… let’s write something ✏️",
       }),
 
-      // Realtime!
-      Collaboration.configure({ document: ydoc }),
-      CollaborationCursor.configure({
-        provider,
-        user: {
-          name: username,
-          // simple distinct color per user:
-          color: "#" + ((Math.random() * 0xffffff) | 0).toString(16).padStart(6, "0"),
-        },
-      }),
+      // Only include collaboration extensions when provider is ready
+      ...(provider
+        ? [
+            Collaboration.configure({ document: ydoc }),
+            CollaborationCursor.configure({
+              provider,
+              user: {
+                name: username,
+                color:
+                  "#" +
+                  ((Math.random() * 0xffffff) | 0)
+                    .toString(16)
+                    .padStart(6, "0"),
+              },
+            }),
+          ]
+        : []),
     ],
     content: note?.contentJson || "",
     autofocus: true,
@@ -123,7 +135,9 @@ export default function NoteView() {
         if (!note) return;
         try {
           await updateContent({
-            variables: { input: { id: note.id, contentText: text, contentJson: json } },
+            variables: {
+              input: { id: note.id, contentText: text, contentJson: json },
+            },
           });
           lastSavedJson.current = json;
         } finally {
