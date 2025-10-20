@@ -11,28 +11,19 @@ export class NoteService {
   constructor(private prisma: PrismaService) {}
 
   async findNotes(userId: string, folderId?: string) {
-    if (folderId) {
-      // Owner’s folder-specific notes
-      return this.prisma.note.findMany({
-        where: { 
-          ownerId: userId,
-          deletedAt: null, 
-          folderId,
-        },
-        orderBy: { sortOrder: 'asc' },
-      });
-    }
-
-    // Root view: own loose notes + notes shared with me
     return this.prisma.note.findMany({
       where: {
         deletedAt: null,
         OR: [
           // Own loose notes (folderId = null)
-          { ownerId: userId, folderId: null },
+          { ownerId: userId },
           // Notes shared with me as collaborator
           { collaborators: { some: { userId } } },
         ],
+        ...(folderId ? { folderId } : {}),
+      },
+      include: {
+        collaborators: { include: { user: true } },
       },
       orderBy: { sortOrder: 'asc' },
     });
@@ -56,14 +47,22 @@ export class NoteService {
   }
 
   async findByUrl(userId: string, url: string, folderId?: string | null) {
-  return this.prisma.note.findFirst({
-    where: {
-      ownerId: userId,
-      url,
-      ...(folderId !== undefined && folderId !== null ? { folderId } : {}),
-    },
-  });
-}
+    const note = await this.prisma.note.findFirst({
+      where: {
+        url,
+        deletedAt: null,
+        OR: [
+          { ownerId: userId },
+          { collaborators: { some: { userId } } },
+        ],
+        ...(folderId !== undefined && folderId !== null ? { folderId } : {}),
+      },
+      include: { collaborators: true },
+    });
+
+    if (!note) throw new NotFoundException('Note not found');
+    return note;
+  }
 
 async createNote(userId: string, input: CreateNoteInput) {
   const baseSlug = slugify(input.title) || 'untitled';
